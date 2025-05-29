@@ -14,28 +14,29 @@
     canvas {
       display: block;
       margin: auto;
-      background: url('https://i.imgur.com/WiE3oRu.png') repeat;
+      background: url('https://cdn.pixabay.com/photo/2017/08/30/07/52/background-2694160_1280.jpg') no-repeat center center;
+      background-size: cover;
     }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas" width="400" height="600"></canvas>
-  <audio id="coinSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_d2ccf813a2.mp3"></audio>
-  <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2f42f6c837.mp3" autoplay loop></audio>  <script>
+  <audio id="coinSound" src="https://cdn.pixabay.com/download/audio/2023/05/25/audio_d2ccf813a2.mp3?filename=arcade-coin-112155.mp3"></audio>
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/03/17/audio_bfedf3b7ff.mp3?filename=funny-game-over-133353.mp3" autoplay loop></audio>  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     const birdImg = new Image();
-    birdImg.src = "https://i.imgur.com/QZ0pWIY.png";
+    birdImg.src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/yellowbird-midflap.png";
 
     const pipeTopImg = new Image();
-    pipeTopImg.src = "https://i.imgur.com/YuRMYpP.png";
+    pipeTopImg.src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green-top.png";
 
     const pipeBottomImg = new Image();
-    pipeBottomImg.src = "https://i.imgur.com/2gk6r7u.png";
+    pipeBottomImg.src = "https://raw.githubusercontent.com/samuelcust/flappy-bird-assets/master/sprites/pipe-green-bottom.png";
 
     const coinImg = new Image();
-    coinImg.src = "https://i.imgur.com/6XgK0Yx.png";
+    coinImg.src = "https://opengameart.org/sites/default/files/coin_24.png";
 
     const coinSound = document.getElementById("coinSound");
     const bgMusic = document.getElementById("bgMusic");
@@ -67,7 +68,7 @@
     });
 
     function spawnPipe() {
-      const gap = 220;
+      const gap = 200;
       const top = Math.random() * 150 + 50;
       pipes.push({ x: canvas.width, top: top, bottom: top + gap });
       coins.push({ x: canvas.width + 20, y: top + gap / 2 - 10, collected: false });
