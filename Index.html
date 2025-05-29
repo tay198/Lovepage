@@ -1,0 +1,59 @@
+ 
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hello Thea</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff0f5;
+      text-align: center;
+      padding: 50px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      background-color: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #ff85c1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hi, what is your name?</h1>
+
+  <input type="text" id="nameInput" placeholder="Enter your name" />
+  <br><br>
+
+  <button onclick="sayHello()">Greet Me</button>
+
+  <script>
+    function sayHello() {
+      const name = document.getElementById("nameInput").value.trim().toLowerCase();
+
+      if (name === "thea") {
+        alert("Hello Thea, welcome to my page.\nTaylan loves you 💖💘💕💞💓❤️");
+      } else {
+        const niceName = name.charAt(0).toUpperCase() + name.slice(1);
+        alert("Hello, " + niceName + "!");
+      }
+    }
+  </script>
+</body>
+</html>
