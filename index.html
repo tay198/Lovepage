@@ -41,10 +41,6 @@
       margin: 0 auto;
       background: radial-gradient(circle at center, #aee1f9 0%, #87CEEB 100%);
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
   </style>
 </head>
 <body>
@@ -56,36 +52,44 @@
 
   <div class="about-page hidden" id="aboutPage" style="position: absolute; top: 60px; left: 0; right: 0; bottom: 0; background: #111; color: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
     <h2 style="font-size: 6vw;">About This Game</h2>
-    <p style="font-size: 5vw; text-align: center;">A Flappy Bird style game gone WILD 🤯 with sound, power-ups, obstacles and more! Tap to fly, collect stars 🌟 and avoid pipes! Coded with love by Tay 💖</p>
+    <p style="font-size: 5vw; text-align: center;">An ultimate version of Flappy Bird 🎮 with levels, music, coins, lava, flapping wings, animations, stars, power-ups and pure madness! 🐦💥 Made by Tay with ChatGPT’s help 🚀</p>
     <button style="margin-top: 20px; font-size: 4vw; padding: 10px 20px;" onclick="hideAbout()">Back to Game</button>
-  </div><audio id="bgMusic" src="https://www.fesliyanstudios.com/play-mp3/387" loop></audio> <audio id="flapSound" src="https://www.fesliyanstudios.com/play-mp3/5736"></audio> <audio id="powerSound" src="https://www.fesliyanstudios.com/play-mp3/6534"></audio>
+  </div><audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/07/25/audio_3b25a20e59.mp3" loop autoplay></audio> <audio id="coinSound" src="https://www.fesliyanstudios.com/play-mp3/6677"></audio>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     const bgMusic = document.getElementById("bgMusic");
-    const flapSound = document.getElementById("flapSound");
-    const powerSound = document.getElementById("powerSound");
+    const coinSound = document.getElementById("coinSound");
 
-    let birdY, birdX, birdVelocity, gravity, lift, score, highScore;
-    let pipes = [], powerUps = [], frame = 0, gameOver = false;
-    const birdImg = new Image();
-    birdImg.src = "https://i.imgur.com/jXoQ9rk.png";
-    const powerImg = new Image();
-    powerImg.src = "https://cdn-icons-png.flaticon.com/512/616/616408.png";
-    const pipeImg = new Image();
-    pipeImg.src = "https://i.imgur.com/2s6w0rv.png"; // Mario-style pipe
+    let birdY, birdX, birdVelocity, gravity, lift, score, highScore, coins;
+    let pipes = [], coinPositions = [], frame = 0, gameOver = false;
+    const birdFrames = [
+      "https://i.imgur.com/sU1QK5C.png",
+      "https://i.imgur.com/bT8KMg3.png"
+    ];
+    const birdImgs = birdFrames.map(src => {
+      const img = new Image();
+      img.src = src;
+      return img;
+    });
+    const coinImg = new Image();
+    coinImg.src = "https://i.imgur.com/IaUrttj.png";
+    const lavaImg = new Image();
+    lavaImg.src = "https://i.imgur.com/VUgwH7K.png";
+    const bgStars = Array.from({ length: 50 }, () => ({ x: Math.random() * 400, y: Math.random() * 600, r: Math.random() * 2 + 1 }));
 
     function resetGame() {
       birdY = canvas.height / 2;
       birdX = 50;
       birdVelocity = 0;
-      gravity = 0.4;
-      lift = -7.5;
+      gravity = 0.25;
+      lift = -6.5;
       score = 0;
+      coins = 0;
       pipes = [];
-      powerUps = [];
+      coinPositions = [];
       frame = 0;
       gameOver = false;
       bgMusic.play();
@@ -95,47 +99,61 @@
     document.addEventListener("keydown", () => {
       if (gameOver) return resetGame();
       birdVelocity = lift;
-      flapSound.play();
     });
     canvas.addEventListener("click", () => {
       if (gameOver) return resetGame();
       birdVelocity = lift;
-      flapSound.play();
     });
 
+    function drawStars() {
+      ctx.fillStyle = "white";
+      bgStars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += 0.5;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      });
+    }
+
     function drawBird() {
-      ctx.drawImage(birdImg, birdX - 15, birdY - 15, 30, 30);
+      const img = birdImgs[Math.floor(frame / 10) % birdImgs.length];
+      ctx.drawImage(img, birdX - 15, birdY - 15, 30, 30);
     }
 
     function drawPipes() {
+      ctx.fillStyle = "#3399ff";
       for (let p of pipes) {
-        ctx.drawImage(pipeImg, p.x, p.top - 320, 40, 320);
-        ctx.drawImage(pipeImg, p.x, p.top + p.gap, 40, 320);
+        ctx.fillRect(p.x, 0, 40, p.top);
+        ctx.fillRect(p.x, p.top + p.gap, 40, canvas.height);
       }
     }
 
-    function drawPowerUps() {
-      for (let p of powerUps) {
-        ctx.drawImage(powerImg, p.x, p.y, 25, 25);
+    function drawCoins() {
+      for (let coin of coinPositions) {
+        ctx.drawImage(coinImg, coin.x, coin.y, 20, 20);
       }
     }
 
-    function updatePowerUps() {
-      if (frame % 300 === 0) {
-        let y = Math.random() * (canvas.height - 50);
-        powerUps.push({ x: canvas.width, y });
-      }
-      for (let i = 0; i < powerUps.length; i++) {
-        powerUps[i].x -= 1.5;
+    function drawLava() {
+      ctx.drawImage(lavaImg, 0, canvas.height - 50, canvas.width, 50);
+    }
+
+    function updateCoins() {
+      for (let i = 0; i < coinPositions.length; i++) {
+        coinPositions[i].x -= 1.5;
         if (
-          birdX + 15 > powerUps[i].x &&
-          birdX - 15 < powerUps[i].x + 25 &&
-          birdY + 15 > powerUps[i].y &&
-          birdY - 15 < powerUps[i].y + 25
+          birdX + 15 > coinPositions[i].x &&
+          birdX - 15 < coinPositions[i].x + 20 &&
+          birdY + 15 > coinPositions[i].y &&
+          birdY - 15 < coinPositions[i].y + 20
         ) {
-          score += 5;
-          powerSound.play();
-          powerUps.splice(i, 1);
+          coins++;
+          coinSound.play();
+          coinPositions.splice(i, 1);
         }
       }
     }
@@ -143,7 +161,9 @@
     function updatePipes() {
       if (frame % 120 === 0) {
         let top = Math.random() * (canvas.height / 2);
-        pipes.push({ x: canvas.width, top: top, gap: 160 });
+        let gap = 190;
+        pipes.push({ x: canvas.width, top, gap });
+        coinPositions.push({ x: canvas.width + 10, y: top + gap / 2 - 10 });
       }
       for (let i = 0; i < pipes.length; i++) {
         pipes[i].x -= 1.5;
@@ -170,9 +190,10 @@
 
     function drawScore() {
       ctx.fillStyle = "black";
-      ctx.font = "22px Arial";
+      ctx.font = "20px Arial";
       ctx.fillText("Score: " + score, 10, 30);
-      ctx.fillText("High Score: " + (highScore || 0), 10, 60);
+      ctx.fillText("Coins: " + coins, 10, 55);
+      ctx.fillText("High Score: " + (highScore || 0), 10, 80);
     }
 
     function gameLoop() {
@@ -191,13 +212,15 @@
       }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawStars();
       birdVelocity += gravity;
       birdY += birdVelocity;
 
       updatePipes();
-      updatePowerUps();
+      updateCoins();
       drawPipes();
-      drawPowerUps();
+      drawCoins();
+      drawLava();
       drawBird();
       detectCollision();
       drawScore();
