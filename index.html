@@ -120,8 +120,13 @@
       const name = document.getElementById("nameInput").value.trim().toLowerCase();
       const msgBox = document.getElementById("message");
       const dancerArea = document.getElementById("dancerArea");
+      const body = document.body;
+
       msgBox.innerHTML = "";
       dancerArea.innerHTML = "";
+
+      // Reset background to default unless overwritten
+      body.style.background = "linear-gradient(to bottom, #fff0f5, #ffe4e1)";
 
       if (name === "thea") {
         msgBox.innerText = "Hello Thea, welcome to my page.\nTaylan loves you 💖💘💕💞💓❤️";
@@ -132,7 +137,10 @@
         msgBox.innerText = "Hey Stacey! You're awesome 🌟 and Tay appreciates you 💜";
         createHearts();
         showGifDancer();
-        // You can replace this with a photo for Stacey later
+      } else if (name === "aydin") {
+        msgBox.innerText = "How cool is this? Chat GBT wrote all this code and I can basically keep editing the code and getting chat gbt to add stuff, now type Thea's name in and make sure it's a capital T";
+        body.style.background = "linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)";
+        createHearts();
       } else if (name) {
         const prettyName = name.charAt(0).toUpperCase() + name.slice(1);
         msgBox.innerText = `Hello, ${prettyName}!`;
