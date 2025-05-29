@@ -1,194 +1,156 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tay's Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tay's Epic Love & Chaos Page</title>
   <style>
     * {
       box-sizing: border-box;
     }
-
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background: linear-gradient(to bottom, #fff0f5, #ffe4e1);
+      font-family: 'Comic Sans MS', cursive;
       margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      background: linear-gradient(135deg, #fff0f5, #ffe4e1);
+      overflow-x: hidden;
     }
-
     .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
       text-align: center;
-      width: 90%;
-      max-width: 400px;
-      animation: fadeIn 2s ease;
     }
-
     h1 {
       font-size: 6vw;
       color: #d63384;
-      margin-bottom: 20px;
-      animation: slideDown 1s ease;
     }
-
-    #message {
-      font-size: 4.5vw;
-      color: #c2185b;
-      white-space: pre-wrap;
-      margin-top: 20px;
-      transition: all 0.3s ease;
-    }
-
     input, button {
       padding: 12px;
       font-size: 5vw;
       border-radius: 10px;
       border: 1px solid #ccc;
-      margin: 10px 0;
-      width: 100%;
+      margin: 10px;
+      width: 90%;
     }
-
     button {
       background-color: #ff69b4;
       color: white;
-      border: none;
     }
-
     button:hover {
       background-color: #ff85c1;
     }
-
-    .dancer, .special-img {
-      width: 60%;
-      max-width: 250px;
+    #message {
+      font-size: 4.5vw;
       margin-top: 20px;
+      color: #c2185b;
+      white-space: pre-wrap;
     }
-
-    .thea-photo {
+    .special-img {
       width: 60vw;
       max-width: 300px;
-      border-radius: 16px;
+      border-radius: 12px;
       margin-top: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .confetti {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
     }
-
-    @keyframes slideDown {
-      from { transform: translateY(-30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
     }
-
-    .heart {
-      position: absolute;
-      color: red;
-      animation: float 6s infinite;
-      font-size: 24px;
-      opacity: 0.6;
+    .shake {
+      animation: shake 0.5s;
     }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-800px) scale(1.5);
-        opacity: 0;
-      }
+    @keyframes rainbow {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
     }
-
-    .normal-text {
-      font-family: Arial, sans-serif !important;
-      color: black !important;
+    .rainbow-bg {
+      background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
+      background-size: 1400% 1400%;
+      animation: rainbow 5s ease infinite;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Hi, what is your name?</h1>
-
     <input type="text" id="nameInput" placeholder="Enter your name" />
-    <br>
     <button onclick="sayHello()">Greet Me</button>
-
     <div id="message"></div>
-    <div id="dancerArea"></div>
-  </div>
+    <div id="effects"></div>
+  </div><audio id="theaSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio> <audio id="aydinSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"></audio> <audio id="russSound" src="https://www.soundjay.com/human/sounds/monkey-01.mp3"></audio>
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>  <script>
     function sayHello() {
       const name = document.getElementById("nameInput").value.trim().toLowerCase();
-      const msgBox = document.getElementById("message");
-      const dancerArea = document.getElementById("dancerArea");
+      const msg = document.getElementById("message");
+      const effects = document.getElementById("effects");
       const body = document.body;
 
-      msgBox.innerHTML = "";
-      dancerArea.innerHTML = "";
-      msgBox.classList.remove("normal-text");
+      msg.innerHTML = "";
+      effects.innerHTML = "";
+      body.classList.remove("shake", "rainbow-bg");
 
       // Reset background
-      body.style.background = "linear-gradient(to bottom, #fff0f5, #ffe4e1)";
+      body.style.background = "linear-gradient(135deg, #fff0f5, #ffe4e1)";
 
       if (name === "thea") {
-        msgBox.innerText = "Hello Thea, welcome to my page.\nTaylan loves you 💖💘💕💞💓❤️";
-        createHearts();
-        showGifDancer();
-        showPhoto("https://i.postimg.cc/t4fvJKGL/Screenshot-20250529-213827-Instagram.jpg");
+        msg.innerText = "Hello Thea, welcome to my page.\nTaylan loves you 💖💘💕💞💓❤️";
+        confettiExplosion();
+        playSound("theaSound");
+        showImage("https://i.postimg.cc/t4fvJKGL/Screenshot-20250529-213827-Instagram.jpg");
       } else if (name === "stacey") {
-        msgBox.innerText = "Hey Stacey! You're awesome 🌟 and Tay appreciates you 💜";
-        createHearts();
-        showGifDancer();
+        msg.innerText = "Hey Stacey! You're awesome 🌟 and Tay appreciates you 💜";
+        confettiExplosion();
+        showImage("https://media.tenor.com/2roX3uxz_68AAAAC/dance-party.gif");
       } else if (name === "aydin") {
-        msgBox.innerText = "How cool is this? Chat GBT wrote all this code and I can basically keep editing the code and getting chat gbt to add stuff, now type Thea's name in and make sure it's a capital T";
-        msgBox.classList.add("normal-text");
-        body.style.background = "linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)";
-        createHearts();
+        msg.innerText = "How cool is this? Chat GBT wrote all this code and I can basically keep editing it. Now type Thea's name!";
+        body.classList.add("rainbow-bg");
+        confettiExplosion();
+        playSound("aydinSound");
       } else if (name === "russ") {
-        msgBox.innerText = "What the hell are you doing on my page you fat bastard. Alright now that I've insulted you, type Aydin's name in";
-        msgBox.classList.add("normal-text");
-        body.style.background = "linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)";
-        createHearts();
-        showPhoto("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Gay_Pride_Flag.svg/2560px-Gay_Pride_Flag.svg.png");
-        showPhoto("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSP746SQFx7pWVAVeQOjE5jx9Xdd5dFk45Oei7LRT9LAq8vkyG9R-ECGqf&s=10");
+        msg.innerText = "What the hell are you doing on my page you fat bastard.\nAlright now that I've insulted you, type Aydin's name in.";
+        body.classList.add("rainbow-bg", "shake");
+        confettiExplosion();
+        playSound("russSound");
+        showImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSP746SQFx7pWVAVeQOjE5jx9Xdd5dFk45Oei7LRT9LAq8vkyG9R-ECGqf&s=10");
+        showImage("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Gay_Pride_Flag.svg/2560px-Gay_Pride_Flag.svg.png");
       } else if (name) {
-        const prettyName = name.charAt(0).toUpperCase() + name.slice(1);
-        msgBox.innerText = `Hello, ${prettyName}!`;
+        msg.innerText = `Hello, ${name.charAt(0).toUpperCase() + name.slice(1)}!`;
       } else {
-        msgBox.innerText = "Please enter your name!";
+        msg.innerText = "Please enter your name!";
       }
     }
 
-    function createHearts() {
-      for (let i = 0; i < 20; i++) {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
-      }
+    function confettiExplosion() {
+      confetti({
+        particleCount: 100,
+        spread: 120,
+        origin: { y: 0.6 }
+      });
     }
 
-    function showGifDancer() {
-      const gif = document.createElement("img");
-      gif.src = "https://media.tenor.com/2roX3uxz_68AAAAC/dance-party.gif";
-      gif.className = "dancer";
-      document.getElementById("dancerArea").appendChild(gif);
+    function playSound(id) {
+      const sound = document.getElementById(id);
+      sound.currentTime = 0;
+      sound.play();
     }
 
-    function showPhoto(url) {
+    function showImage(url) {
       const img = document.createElement("img");
       img.src = url;
       img.className = "special-img";
-      document.getElementById("dancerArea").appendChild(img);
+      document.getElementById("effects").appendChild(img);
     }
-  </script>
-</body>
+  </script></body>
 </html>
