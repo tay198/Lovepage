@@ -50,10 +50,10 @@
     }
 
     .thea-photo {
-      width: 200px;
+      width: 220px;
       border-radius: 16px;
       margin-top: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     @keyframes fadeIn {
@@ -131,14 +131,14 @@
 
     function showGifDancer() {
       const gif = document.createElement("img");
-      gif.src = "https://media.tenor.com/2roX3uxz_68AAAAC/dance-party.gif"; // Working loop gif
+      gif.src = "https://media.tenor.com/2roX3uxz_68AAAAC/dance-party.gif";
       gif.className = "dancer";
       document.getElementById("dancerArea").appendChild(gif);
     }
 
     function showTheaPhoto() {
       const theaImg = document.createElement("img");
-      theaImg.src = "https://postimg.cc/Sn6fttsr/image"; // Thea's photo link
+      theaImg.src = "https://i.postimg.cc/t4fvJKGL/Screenshot-20250529-213827-Instagram.jpg";
       theaImg.className = "thea-photo";
       document.getElementById("dancerArea").appendChild(theaImg);
     }
