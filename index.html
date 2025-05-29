@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tay's Flappy Game</title>
+  <title>Tay's Epic Flappy Game</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,7 +13,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: skyblue;
+      background: linear-gradient(to top, #87CEEB, #ffffff);
       font-family: 'Arial', sans-serif;
     }
     .navbar {
@@ -23,71 +23,125 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      background-color: #333;
+      background-color: #222;
       color: white;
       padding: 10px;
       z-index: 10;
     }
     .navbar button {
       background: white;
-      color: #333;
+      color: #222;
       border: none;
       padding: 8px 12px;
       border-radius: 5px;
+      font-weight: bold;
     }
     canvas {
       display: block;
       margin: 0 auto;
-      background: linear-gradient(to top, #87CEEB, #ffffff);
+      background: radial-gradient(circle at center, #aee1f9 0%, #87CEEB 100%);
+    }
+    .powerup {
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <div class="navbar">
-    <span>Tay's Flappy Game</span>
+    <span>🐦 Tay's Epic Flappy World 🕹️</span>
     <button onclick="showAbout()">About</button>
-    <button onclick="alert('Coded by Tay & ChatGPT 💻')">Contact</button>
+    <button onclick="alert('Coded with power by Tay & ChatGPT 💥')">Contact</button>
   </div><canvas id="gameCanvas" width="400" height="600"></canvas>
 
   <div class="about-page hidden" id="aboutPage" style="position: absolute; top: 60px; left: 0; right: 0; bottom: 0; background: #111; color: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
     <h2 style="font-size: 6vw;">About This Game</h2>
-    <p style="font-size: 5vw; text-align: center;">A Flappy Bird style game created by Tay with a little coding magic from ChatGPT. Tap to fly and don't hit the pipes! 🐦🎮</p>
+    <p style="font-size: 5vw; text-align: center;">A Flappy Bird style game gone WILD 🤯 with sound, power-ups, obstacles and more! Tap to fly, collect stars 🌟 and avoid spikes! Coded with love by Tay 💖</p>
     <button style="margin-top: 20px; font-size: 4vw; padding: 10px 20px;" onclick="hideAbout()">Back to Game</button>
-  </div>  <script>
+  </div><audio id="bgMusic" src="https://www.fesliyanstudios.com/play-mp3/387" loop></audio> <audio id="flapSound" src="https://www.fesliyanstudios.com/play-mp3/5736"></audio> <audio id="powerSound" src="https://www.fesliyanstudios.com/play-mp3/6534"></audio>
+
+  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    let birdY = canvas.height / 2;
-    let birdX = 50;
-    let birdVelocity = 0;
-    let gravity = 0.6;
-    let lift = -10;
-    let score = 0;
+    const bgMusic = document.getElementById("bgMusic");
+    const flapSound = document.getElementById("flapSound");
+    const powerSound = document.getElementById("powerSound");
 
-    let pipes = [];
-    let frame = 0;
-    let gameOver = false;
+    let birdY, birdX, birdVelocity, gravity, lift, score, highScore;
+    let pipes = [], powerUps = [], frame = 0, gameOver = false;
+    const birdImg = new Image();
+    birdImg.src = "https://i.imgur.com/jXoQ9rk.png";
+    const powerImg = new Image();
+    powerImg.src = "https://cdn-icons-png.flaticon.com/512/616/616408.png";
+
+    function resetGame() {
+      birdY = canvas.height / 2;
+      birdX = 50;
+      birdVelocity = 0;
+      gravity = 0.6;
+      lift = -10;
+      score = 0;
+      pipes = [];
+      powerUps = [];
+      frame = 0;
+      gameOver = false;
+      bgMusic.play();
+      gameLoop();
+    }
 
     document.addEventListener("keydown", () => {
+      if (gameOver) return resetGame();
       birdVelocity = lift;
+      flapSound.play();
     });
     canvas.addEventListener("click", () => {
+      if (gameOver) return resetGame();
       birdVelocity = lift;
+      flapSound.play();
     });
 
     function drawBird() {
-      ctx.fillStyle = "yellow";
-      ctx.beginPath();
-      ctx.arc(birdX, birdY, 15, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.drawImage(birdImg, birdX - 15, birdY - 15, 30, 30);
     }
 
     function drawPipes() {
-      for (let i = 0; i < pipes.length; i++) {
-        let p = pipes[i];
-        ctx.fillStyle = "green";
+      for (let p of pipes) {
+        let grd = ctx.createLinearGradient(p.x, 0, p.x + 40, 0);
+        grd.addColorStop(0, "#2e8b57");
+        grd.addColorStop(1, "#006400");
+        ctx.fillStyle = grd;
         ctx.fillRect(p.x, 0, 40, p.top);
         ctx.fillRect(p.x, p.top + p.gap, 40, canvas.height);
+      }
+    }
+
+    function drawPowerUps() {
+      for (let p of powerUps) {
+        ctx.drawImage(powerImg, p.x, p.y, 25, 25);
+      }
+    }
+
+    function updatePowerUps() {
+      if (frame % 300 === 0) {
+        let y = Math.random() * (canvas.height - 50);
+        powerUps.push({ x: canvas.width, y });
+      }
+      for (let i = 0; i < powerUps.length; i++) {
+        powerUps[i].x -= 2;
+        if (
+          birdX + 15 > powerUps[i].x &&
+          birdX - 15 < powerUps[i].x + 25 &&
+          birdY + 15 > powerUps[i].y &&
+          birdY - 15 < powerUps[i].y + 25
+        ) {
+          score += 5;
+          powerSound.play();
+          powerUps.splice(i, 1);
+        }
       }
     }
 
@@ -121,19 +175,23 @@
 
     function drawScore() {
       ctx.fillStyle = "black";
-      ctx.font = "30px Arial";
-      ctx.fillText("Score: " + score, 10, 50);
+      ctx.font = "22px Arial";
+      ctx.fillText("Score: " + score, 10, 30);
+      ctx.fillText("High Score: " + (highScore || 0), 10, 60);
     }
 
     function gameLoop() {
       if (gameOver) {
+        bgMusic.pause();
+        highScore = Math.max(score, highScore || 0);
+        localStorage.setItem("highScore", highScore);
         ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
         ctx.font = "40px Arial";
         ctx.fillText("Game Over", canvas.width / 4, canvas.height / 2);
         ctx.font = "20px Arial";
-        ctx.fillText("Refresh to restart", canvas.width / 4 + 10, canvas.height / 2 + 40);
+        ctx.fillText("Tap or press any key to restart", canvas.width / 7, canvas.height / 2 + 40);
         return;
       }
 
@@ -142,7 +200,9 @@
       birdY += birdVelocity;
 
       updatePipes();
+      updatePowerUps();
       drawPipes();
+      drawPowerUps();
       drawBird();
       detectCollision();
       drawScore();
@@ -154,12 +214,15 @@
     function showAbout() {
       document.getElementById("gameCanvas").style.display = "none";
       document.getElementById("aboutPage").style.display = "flex";
+      bgMusic.pause();
     }
     function hideAbout() {
       document.getElementById("gameCanvas").style.display = "block";
       document.getElementById("aboutPage").style.display = "none";
+      bgMusic.play();
     }
 
-    gameLoop();
+    highScore = localStorage.getItem("highScore") || 0;
+    resetGame();
   </script></body>
 </html>
