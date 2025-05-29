@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tay Loves Thea</title>
+  <title>Tay's Page</title>
   <style>
     * {
       box-sizing: border-box;
@@ -60,9 +60,9 @@
       background-color: #ff85c1;
     }
 
-    .dancer {
-      width: 40vw;
-      max-width: 150px;
+    .dancer, .special-img {
+      width: 60%;
+      max-width: 250px;
       margin-top: 20px;
     }
 
@@ -132,7 +132,7 @@
       dancerArea.innerHTML = "";
       msgBox.classList.remove("normal-text");
 
-      // Reset background to default unless overwritten
+      // Reset background
       body.style.background = "linear-gradient(to bottom, #fff0f5, #ffe4e1)";
 
       if (name === "thea") {
@@ -149,6 +149,13 @@
         msgBox.classList.add("normal-text");
         body.style.background = "linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)";
         createHearts();
+      } else if (name === "russ") {
+        msgBox.innerText = "What the hell are you doing on my page you fat bastard. Alright now that I've insulted you, type Aydin's name in";
+        msgBox.classList.add("normal-text");
+        body.style.background = "linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)";
+        createHearts();
+        showPhoto("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Gay_Pride_Flag.svg/2560px-Gay_Pride_Flag.svg.png");
+        showPhoto("https://i.imgur.com/jFHhP3W.jpeg"); // funny fat monkey image
       } else if (name) {
         const prettyName = name.charAt(0).toUpperCase() + name.slice(1);
         msgBox.innerText = `Hello, ${prettyName}!`;
@@ -179,7 +186,7 @@
     function showPhoto(url) {
       const img = document.createElement("img");
       img.src = url;
-      img.className = "thea-photo";
+      img.className = "special-img";
       document.getElementById("dancerArea").appendChild(img);
     }
   </script>
