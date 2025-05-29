@@ -41,9 +41,6 @@
       margin: 0 auto;
       background: radial-gradient(circle at center, #aee1f9 0%, #87CEEB 100%);
     }
-    .powerup {
-      animation: spin 2s linear infinite;
-    }
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -59,7 +56,7 @@
 
   <div class="about-page hidden" id="aboutPage" style="position: absolute; top: 60px; left: 0; right: 0; bottom: 0; background: #111; color: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
     <h2 style="font-size: 6vw;">About This Game</h2>
-    <p style="font-size: 5vw; text-align: center;">A Flappy Bird style game gone WILD 🤯 with sound, power-ups, obstacles and more! Tap to fly, collect stars 🌟 and avoid spikes! Coded with love by Tay 💖</p>
+    <p style="font-size: 5vw; text-align: center;">A Flappy Bird style game gone WILD 🤯 with sound, power-ups, obstacles and more! Tap to fly, collect stars 🌟 and avoid pipes! Coded with love by Tay 💖</p>
     <button style="margin-top: 20px; font-size: 4vw; padding: 10px 20px;" onclick="hideAbout()">Back to Game</button>
   </div><audio id="bgMusic" src="https://www.fesliyanstudios.com/play-mp3/387" loop></audio> <audio id="flapSound" src="https://www.fesliyanstudios.com/play-mp3/5736"></audio> <audio id="powerSound" src="https://www.fesliyanstudios.com/play-mp3/6534"></audio>
 
@@ -77,13 +74,15 @@
     birdImg.src = "https://i.imgur.com/jXoQ9rk.png";
     const powerImg = new Image();
     powerImg.src = "https://cdn-icons-png.flaticon.com/512/616/616408.png";
+    const pipeImg = new Image();
+    pipeImg.src = "https://i.imgur.com/2s6w0rv.png"; // Mario-style pipe
 
     function resetGame() {
       birdY = canvas.height / 2;
       birdX = 50;
       birdVelocity = 0;
-      gravity = 0.6;
-      lift = -10;
+      gravity = 0.4;
+      lift = -7.5;
       score = 0;
       pipes = [];
       powerUps = [];
@@ -110,12 +109,8 @@
 
     function drawPipes() {
       for (let p of pipes) {
-        let grd = ctx.createLinearGradient(p.x, 0, p.x + 40, 0);
-        grd.addColorStop(0, "#2e8b57");
-        grd.addColorStop(1, "#006400");
-        ctx.fillStyle = grd;
-        ctx.fillRect(p.x, 0, 40, p.top);
-        ctx.fillRect(p.x, p.top + p.gap, 40, canvas.height);
+        ctx.drawImage(pipeImg, p.x, p.top - 320, 40, 320);
+        ctx.drawImage(pipeImg, p.x, p.top + p.gap, 40, 320);
       }
     }
 
@@ -131,7 +126,7 @@
         powerUps.push({ x: canvas.width, y });
       }
       for (let i = 0; i < powerUps.length; i++) {
-        powerUps[i].x -= 2;
+        powerUps[i].x -= 1.5;
         if (
           birdX + 15 > powerUps[i].x &&
           birdX - 15 < powerUps[i].x + 25 &&
@@ -146,12 +141,12 @@
     }
 
     function updatePipes() {
-      if (frame % 90 === 0) {
+      if (frame % 120 === 0) {
         let top = Math.random() * (canvas.height / 2);
-        pipes.push({ x: canvas.width, top: top, gap: 150 });
+        pipes.push({ x: canvas.width, top: top, gap: 160 });
       }
       for (let i = 0; i < pipes.length; i++) {
-        pipes[i].x -= 2;
+        pipes[i].x -= 1.5;
         if (pipes[i].x + 40 < 0) {
           pipes.splice(i, 1);
           score++;
