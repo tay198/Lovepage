@@ -85,6 +85,7 @@
       coins = [];
       score = 0;
       gameOver = false;
+      gameStarted = true;
       bgMusic.play();
       requestAnimationFrame(gameLoop);
     }
@@ -102,7 +103,6 @@
 
     startBtn.addEventListener("click", () => {
       startScreen.style.display = "none";
-      gameStarted = true;
       resetGame();
     });
 
