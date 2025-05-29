@@ -1,184 +1,165 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tay's Epic Love & Chaos Page</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tay's Flappy Game</title>
   <style>
     * {
       box-sizing: border-box;
-    }
-    body {
-      font-family: 'Comic Sans MS', cursive;
       margin: 0;
-      background: linear-gradient(135deg, #fff0f5, #ffe4e1);
-      overflow-x: hidden;
+      padding: 0;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: skyblue;
+      font-family: 'Arial', sans-serif;
     }
     .navbar {
+      position: absolute;
+      width: 100%;
+      top: 0;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 12px;
-      background-color: #ff69b4;
+      background-color: #333;
       color: white;
-      font-size: 4vw;
+      padding: 10px;
+      z-index: 10;
     }
     .navbar button {
       background: white;
-      color: #ff69b4;
+      color: #333;
       border: none;
       padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 3.5vw;
+      border-radius: 5px;
     }
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100vh - 60px);
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 6vw;
-      color: #d63384;
-    }
-    input, button {
-      padding: 12px;
-      font-size: 5vw;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      margin: 10px;
-      width: 90%;
-    }
-    button {
-      background-color: #ff69b4;
-      color: white;
-    }
-    button:hover {
-      background-color: #ff85c1;
-    }
-    #message {
-      font-size: 4.5vw;
-      margin-top: 20px;
-      color: #c2185b;
-      white-space: pre-wrap;
-    }
-    .special-img {
-      width: 60vw;
-      max-width: 300px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
-    }
-    .shake {
-      animation: shake 0.5s;
-    }
-    @keyframes rainbow {
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
-    .rainbow-bg {
-      background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
-      background-size: 1400% 1400%;
-      animation: rainbow 5s ease infinite;
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: linear-gradient(to top, #87CEEB, #ffffff);
     }
   </style>
 </head>
 <body>
   <div class="navbar">
-    <span>Tay's Page</span>
-    <button onclick="scrollToInput()">Home</button>
-    <button onclick="alert('More features coming soon!')">About</button>
-    <button onclick="alert('Coded with love by Tay 💖')">Contact</button>
-  </div>
+    <span>Tay's Flappy Game</span>
+    <button onclick="showAbout()">About</button>
+    <button onclick="alert('Coded by Tay & ChatGPT 💻')">Contact</button>
+  </div><canvas id="gameCanvas" width="400" height="600"></canvas>
 
-  <div class="container">
-    <h1>Hi, what is your name?</h1>
-    <input type="text" id="nameInput" placeholder="Enter your name" />
-    <button onclick="sayHello()">Greet Me</button>
-    <div id="message"></div>
-    <div id="effects"></div>
-  </div>
+  <div class="about-page hidden" id="aboutPage" style="position: absolute; top: 60px; left: 0; right: 0; bottom: 0; background: #111; color: white; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+    <h2 style="font-size: 6vw;">About This Game</h2>
+    <p style="font-size: 5vw; text-align: center;">A Flappy Bird style game created by Tay with a little coding magic from ChatGPT. Tap to fly and don't hit the pipes! 🐦🎮</p>
+    <button style="margin-top: 20px; font-size: 4vw; padding: 10px 20px;" onclick="hideAbout()">Back to Game</button>
+  </div>  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-  <audio id="theaSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-  <audio id="aydinSound" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"></audio>
-  <audio id="russSound" src="https://www.soundjay.com/human/sounds/monkey-01.mp3"></audio>
+    let birdY = canvas.height / 2;
+    let birdX = 50;
+    let birdVelocity = 0;
+    let gravity = 0.6;
+    let lift = -10;
+    let score = 0;
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script>
-    function sayHello() {
-      const name = document.getElementById("nameInput").value.trim().toLowerCase();
-      const msg = document.getElementById("message");
-      const effects = document.getElementById("effects");
-      const body = document.body;
+    let pipes = [];
+    let frame = 0;
+    let gameOver = false;
 
-      msg.innerHTML = "";
-      effects.innerHTML = "";
-      body.classList.remove("shake", "rainbow-bg");
+    document.addEventListener("keydown", () => {
+      birdVelocity = lift;
+    });
+    canvas.addEventListener("click", () => {
+      birdVelocity = lift;
+    });
 
-      // Reset background
-      body.style.background = "linear-gradient(135deg, #fff0f5, #ffe4e1)";
+    function drawBird() {
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.arc(birdX, birdY, 15, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-      if (name === "thea") {
-        msg.innerText = "Hello Thea, welcome to my page.\nTaylan loves you 💖💘💕💞💓❤️";
-        confettiExplosion();
-        playSound("theaSound");
-        showImage("https://i.postimg.cc/t4fvJKGL/Screenshot-20250529-213827-Instagram.jpg");
-      } else if (name === "stacey") {
-        msg.innerText = "Hey Stacey! You're awesome 🌟 and Tay appreciates you 💜";
-        confettiExplosion();
-        showImage("https://media.tenor.com/2roX3uxz_68AAAAC/dance-party.gif");
-      } else if (name === "aydin") {
-        msg.innerText = "How cool is this? Chat GBT wrote all this code and I can basically keep editing it. Now type Thea's name!";
-        body.classList.add("rainbow-bg");
-        confettiExplosion();
-        playSound("aydinSound");
-      } else if (name === "russ") {
-        msg.innerText = "What the hell are you doing on my page you fat bastard.\nAlright now that I've insulted you, type Aydin's name in.";
-        body.classList.add("rainbow-bg", "shake");
-        confettiExplosion();
-        playSound("russSound");
-        showImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSP746SQFx7pWVAVeQOjE5jx9Xdd5dFk45Oei7LRT9LAq8vkyG9R-ECGqf&s=10");
-        showImage("https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Gay_Pride_Flag.svg/2560px-Gay_Pride_Flag.svg.png");
-      } else if (name) {
-        const prettyName = name.charAt(0).toUpperCase() + name.slice(1);
-        msg.innerText = `Hello, ${prettyName}!`;
-      } else {
-        msg.innerText = "Please enter your name!";
+    function drawPipes() {
+      for (let i = 0; i < pipes.length; i++) {
+        let p = pipes[i];
+        ctx.fillStyle = "green";
+        ctx.fillRect(p.x, 0, 40, p.top);
+        ctx.fillRect(p.x, p.top + p.gap, 40, canvas.height);
       }
     }
 
-    function confettiExplosion() {
-      confetti({
-        particleCount: 100,
-        spread: 120,
-        origin: { y: 0.6 }
-      });
+    function updatePipes() {
+      if (frame % 90 === 0) {
+        let top = Math.random() * (canvas.height / 2);
+        pipes.push({ x: canvas.width, top: top, gap: 150 });
+      }
+      for (let i = 0; i < pipes.length; i++) {
+        pipes[i].x -= 2;
+        if (pipes[i].x + 40 < 0) {
+          pipes.splice(i, 1);
+          score++;
+        }
+      }
     }
 
-    function playSound(id) {
-      const sound = document.getElementById(id);
-      sound.currentTime = 0;
-      sound.play();
+    function detectCollision() {
+      for (let p of pipes) {
+        if (
+          birdX + 15 > p.x && birdX - 15 < p.x + 40 &&
+          (birdY - 15 < p.top || birdY + 15 > p.top + p.gap)
+        ) {
+          gameOver = true;
+        }
+      }
+      if (birdY + 15 > canvas.height || birdY - 15 < 0) {
+        gameOver = true;
+      }
     }
 
-    function showImage(url) {
-      const img = document.createElement("img");
-      img.src = url;
-      img.className = "special-img";
-      document.getElementById("effects").appendChild(img);
+    function drawScore() {
+      ctx.fillStyle = "black";
+      ctx.font = "30px Arial";
+      ctx.fillText("Score: " + score, 10, 50);
     }
 
-    function scrollToInput() {
-      document.getElementById("nameInput").scrollIntoView({ behavior: 'smooth' });
+    function gameLoop() {
+      if (gameOver) {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.font = "40px Arial";
+        ctx.fillText("Game Over", canvas.width / 4, canvas.height / 2);
+        ctx.font = "20px Arial";
+        ctx.fillText("Refresh to restart", canvas.width / 4 + 10, canvas.height / 2 + 40);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      birdVelocity += gravity;
+      birdY += birdVelocity;
+
+      updatePipes();
+      drawPipes();
+      drawBird();
+      detectCollision();
+      drawScore();
+
+      frame++;
+      requestAnimationFrame(gameLoop);
     }
-  </script>
-</body>
+
+    function showAbout() {
+      document.getElementById("gameCanvas").style.display = "none";
+      document.getElementById("aboutPage").style.display = "flex";
+    }
+    function hideAbout() {
+      document.getElementById("gameCanvas").style.display = "block";
+      document.getElementById("aboutPage").style.display = "none";
+    }
+
+    gameLoop();
+  </script></body>
 </html>
