@@ -2,44 +2,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tay's Classic Flappy Game</title>
+  <title>Tay's Flappy Game</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
       height: 100%;
       overflow: hidden;
       font-family: Arial, sans-serif;
-      background: url('https://i.imgur.com/czOmUCu.png') repeat-x center center;
-      background-size: cover;
+      background: #70c5ce;
     }
     canvas {
       display: block;
       margin: auto;
+      background: url('https://www.transparenttextures.com/patterns/cubes.png') repeat;
     }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas" width="400" height="600"></canvas>
-  <audio id="coinSound" src="https://www.fesliyanstudios.com/play-mp3/6677"></audio>
-  <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2023/03/05/audio_c85a91e6e2.mp3" loop autoplay></audio>  <script>
+  <audio id="coinSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_d2ccf813a2.mp3"></audio>
+  <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2f42f6c837.mp3" autoplay loop></audio>  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
     const birdImg = new Image();
-    birdImg.src = "https://i.imgur.com/sU1QK5C.png";
+    birdImg.src = "https://opengameart.org/sites/default/files/flappybirdgreen.png";
 
     const pipeTopImg = new Image();
-    pipeTopImg.src = "https://i.imgur.com/K4w4kzP.png";
+    pipeTopImg.src = "https://opengameart.org/sites/default/files/pipe-green-top.png";
+
     const pipeBottomImg = new Image();
-    pipeBottomImg.src = "https://i.imgur.com/NoU0zBf.png";
+    pipeBottomImg.src = "https://opengameart.org/sites/default/files/pipe-green-bottom.png";
 
     const coinImg = new Image();
-    coinImg.src = "https://i.imgur.com/IaUrttj.png";
+    coinImg.src = "https://opengameart.org/sites/default/files/goldcoin.png";
 
     const coinSound = document.getElementById("coinSound");
     const bgMusic = document.getElementById("bgMusic");
 
-    let bird = { x: 50, y: 150, width: 34, height: 24, gravity: 0.3, lift: -5.5, velocity: 0 };
+    let bird = { x: 50, y: 150, width: 34, height: 24, gravity: 0.25, lift: -5, velocity: 0 };
     let pipes = [], coins = [];
     let score = 0, highScore = localStorage.getItem("highScore") || 0;
     let frame = 0;
@@ -66,8 +67,8 @@
     });
 
     function spawnPipe() {
-      const gap = 160;
-      const top = Math.random() * 200 + 50;
+      const gap = 220;
+      const top = Math.random() * 150 + 50;
       pipes.push({ x: canvas.width, top: top, bottom: top + gap });
       coins.push({ x: canvas.width + 20, y: top + gap / 2 - 10, collected: false });
     }
@@ -108,6 +109,29 @@
       });
     }
 
+    function drawHUD() {
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, 10, 30);
+      ctx.fillText("High Score: " + highScore, 10, 60);
+    }
+
+    function drawBird() {
+      ctx.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    }
+
+    function moveElements() {
+      pipes.forEach(pipe => pipe.x -= 1.5);
+      coins.forEach(coin => coin.x -= 1.5);
+      if (pipes.length && pipes[0].x + 52 < 0) pipes.shift();
+      if (coins.length && coins[0].x + 20 < 0) coins.shift();
+    }
+
+    function updateBird() {
+      bird.velocity += bird.gravity;
+      bird.y += bird.velocity;
+    }
+
     function gameLoop() {
       if (gameOver) {
         bgMusic.pause();
@@ -126,32 +150,14 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       frame++;
 
-      // Bird physics
-      bird.velocity += bird.gravity;
-      bird.y += bird.velocity;
-
-      // Spawn pipes
       if (frame % 100 === 0) spawnPipe();
-
-      // Move pipes & coins
-      pipes.forEach(pipe => pipe.x -= 2);
-      coins.forEach(coin => coin.x -= 2);
-
-      // Remove old pipes
-      if (pipes.length && pipes[0].x + 52 < 0) pipes.shift();
-      if (coins.length && coins[0].x + 20 < 0) coins.shift();
-
-      // Draw everything
-      ctx.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+      updateBird();
+      moveElements();
       drawPipes();
       drawCoins();
+      drawBird();
       detectCollisions();
-
-      // Score display
-      ctx.fillStyle = "black";
-      ctx.font = "20px Arial";
-      ctx.fillText("Score: " + score, 10, 30);
-      ctx.fillText("High Score: " + highScore, 10, 60);
+      drawHUD();
 
       requestAnimationFrame(gameLoop);
     }
