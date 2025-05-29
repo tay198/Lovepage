@@ -38,6 +38,7 @@
       color: #c2185b;
       white-space: pre-wrap;
       margin-top: 20px;
+      transition: all 0.3s ease;
     }
 
     input, button {
@@ -101,6 +102,11 @@
         opacity: 0;
       }
     }
+
+    .normal-text {
+      font-family: Arial, sans-serif !important;
+      color: black !important;
+    }
   </style>
 </head>
 <body>
@@ -124,6 +130,7 @@
 
       msgBox.innerHTML = "";
       dancerArea.innerHTML = "";
+      msgBox.classList.remove("normal-text");
 
       // Reset background to default unless overwritten
       body.style.background = "linear-gradient(to bottom, #fff0f5, #ffe4e1)";
@@ -139,6 +146,7 @@
         showGifDancer();
       } else if (name === "aydin") {
         msgBox.innerText = "How cool is this? Chat GBT wrote all this code and I can basically keep editing the code and getting chat gbt to add stuff, now type Thea's name in and make sure it's a capital T";
+        msgBox.classList.add("normal-text");
         body.style.background = "linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet)";
         createHearts();
       } else if (name) {
