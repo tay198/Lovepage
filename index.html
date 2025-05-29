@@ -2,36 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tay Loves Thea</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Comic Sans MS', cursive, sans-serif;
       background: linear-gradient(to bottom, #fff0f5, #ffe4e1);
       text-align: center;
-      padding: 50px;
+      padding: 20px;
+      margin: 0;
       animation: fadeIn 2s ease;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     h1 {
-      font-size: 32px;
+      font-size: 6vw;
       color: #d63384;
+      margin-top: 30px;
       animation: slideDown 1s ease;
     }
 
     #message {
-      font-size: 20px;
+      font-size: 4.5vw;
       margin-top: 20px;
       color: #c2185b;
       white-space: pre-wrap;
     }
 
     input, button {
-      padding: 10px;
-      font-size: 18px;
-      border-radius: 8px;
+      padding: 12px;
+      font-size: 5vw;
+      border-radius: 10px;
       border: 1px solid #ccc;
-      margin: 10px;
+      margin: 12px;
+      width: 80%;
+      max-width: 400px;
     }
 
     button {
@@ -45,12 +54,14 @@
     }
 
     .dancer {
-      width: 150px;
+      width: 40vw;
+      max-width: 150px;
       margin-top: 30px;
     }
 
     .thea-photo {
-      width: 220px;
+      width: 60vw;
+      max-width: 300px;
       border-radius: 16px;
       margin-top: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
