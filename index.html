@@ -5,78 +5,33 @@
   <title>Undercover Shift 3D</title>
   <style>
     body { margin: 0; overflow: hidden; font-family: monospace; }
-    canvas { display: block; }#joystick {
-  position: absolute;
-  bottom: 40px;
-  right: 40px;
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  touch-action: none;
-}
-
-#joystick-handle {
-  width: 50px;
-  height: 50px;
-  background: #00ffff;
-  border-radius: 50%;
-  position: relative;
-  left: 25px;
-  top: 25px;
-  touch-action: none;
-}
-
-#interact {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  background: #008cff;
-  color: white;
-  font-size: 18px;
-  padding: 15px 25px;
-  border: none;
-  border-radius: 12px;
-  touch-action: manipulation;
-}
-
-#dialogue, #hud {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
-  display: none;
-}
-
-#dialogue {
-  bottom: 100px;
-}
-
-#hud {
-  top: 20px;
-  display: flex;
-  gap: 20px;
-}
-
-.bar {
-  width: 120px;
-  height: 20px;
-  background: #444;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.bar-fill {
-  height: 100%;
-  transition: width 0.2s;
-}
-
-.police { background: #00ccff; }
-.gang { background: #ff4444; }
-
+    canvas { display: block; }
+    #joystick, #joystick-handle, #interact, #dialogue, #hud, .bar, .bar-fill {
+      touch-action: none;
+    }
+    #joystick {
+      position: absolute; bottom: 40px; right: 40px; width: 100px; height: 100px;
+      background: rgba(255, 255, 255, 0.1); border-radius: 50%;
+    }
+    #joystick-handle {
+      width: 50px; height: 50px; background: #00ffff; border-radius: 50%;
+      position: relative; left: 25px; top: 25px;
+    }
+    #interact {
+      position: absolute; bottom: 40px; left: 40px; background: #008cff;
+      color: white; font-size: 18px; padding: 15px 25px; border: none;
+      border-radius: 12px; font-family: monospace;
+    }
+    #dialogue, #hud {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7); color: white;
+      padding: 10px 20px; border-radius: 10px; display: none;
+    }
+    #dialogue { bottom: 100px; }
+    #hud { top: 20px; display: flex; gap: 20px; }
+    .bar { width: 120px; height: 20px; background: #444; border-radius: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; transition: width 0.2s; }
+    .police { background: #00ccff; } .gang { background: #ff4444; }
   </style>
 </head>
 <body>
@@ -95,142 +50,62 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7);
     scene.add(ambientLight, directionalLight);
 
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(500, 500),
-      new THREE.MeshStandardMaterial({ color: 0x333333 })
-    );
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshStandardMaterial({ color: 0x303030 }));
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    for (let i = 0; i < 20; i++) {
+    // Generate a large city block layout
+    for (let i = 0; i < 100; i++) {
       const building = new THREE.Mesh(
-        new THREE.BoxGeometry(5, Math.random() * 10 + 5, 5),
-        new THREE.MeshStandardMaterial({ color: 0x555555 })
+        new THREE.BoxGeometry(5, Math.random() * 15 + 5, 5),
+        new THREE.MeshStandardMaterial({ color: 0x444444 })
       );
-      building.position.set((Math.random() - 0.5) * 200, building.geometry.parameters.height / 2, (Math.random() - 0.5) * 200);
+      building.position.set((Math.random() - 0.5) * 400, building.geometry.parameters.height / 2, (Math.random() - 0.5) * 400);
       scene.add(building);
     }
 
-    // Custom built police officer from primitives
-const player = new THREE.Group(); // custom police model group that will move with joystick
+    // Custom player officer
+    const player = new THREE.Group();
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x1a237e }));
+    torso.position.y = 1.6; player.add(torso);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffcc99 }));
+    head.position.y = 2.3; player.add(head);
+    const hat = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12), new THREE.MeshStandardMaterial({ color: 0x0d47a1 }));
+    hat.position.y = 2.55; player.add(hat);
+    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 12), new THREE.MeshStandardMaterial({ color: 0x0d47a1 }));
+    brim.position.y = 2.5; player.add(brim);
+    const leftLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.2, 12), new THREE.MeshStandardMaterial({ color: 0x0d47a1 }));
+    leftLeg.position.set(-0.3, 0.6, 0); player.add(leftLeg);
+    const rightLeg = leftLeg.clone(); rightLeg.position.x = 0.3; player.add(rightLeg);
+    player.position.set(0, 0, 0);
+    scene.add(player);
 
-// Torso
-const torso = new THREE.Mesh(
-  new THREE.BoxGeometry(1, 1.2, 0.6),
-  new THREE.MeshStandardMaterial({ color: 0x1a237e })
-);
-torso.position.y = 1.6;
-player.add(torso);
-
-// Head
-const head = new THREE.Mesh(
-  new THREE.SphereGeometry(0.3, 16, 16),
-  new THREE.MeshStandardMaterial({ color: 0xffcc99 })
-);
-head.position.y = 2.3;
-player.add(head);
-
-// Hat
-const hatBase = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12),
-  new THREE.MeshStandardMaterial({ color: 0x0d47a1 })
-);
-hatBase.position.y = 2.55;
-player.add(hatBase);
-
-const hatBrim = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.4, 0.4, 0.05, 12),
-  new THREE.MeshStandardMaterial({ color: 0x0d47a1 })
-);
-hatBrim.position.y = 2.5;
-player.add(hatBrim);
-
-// Arms
-const leftArm = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.15, 0.15, 1, 12),
-  new THREE.MeshStandardMaterial({ color: 0x1a237e })
-);
-leftArm.position.set(-0.65, 1.6, 0);
-leftArm.rotation.z = Math.PI / 2;
-player.add(leftArm);
-
-const rightArm = leftArm.clone();
-rightArm.position.x = 0.65;
-player.add(rightArm);
-
-// Legs
-const leftLeg = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.2, 0.2, 1.2, 12),
-  new THREE.MeshStandardMaterial({ color: 0x0d47a1 })
-);
-leftLeg.position.set(-0.3, 0.6, 0);
-player.add(leftLeg);
-
-const rightLeg = leftLeg.clone();
-rightLeg.position.x = 0.3;
-player.add(rightLeg);
-
-// Belt gear
-const radio = new THREE.Mesh(
-  new THREE.BoxGeometry(0.2, 0.3, 0.1),
-  new THREE.MeshStandardMaterial({ color: 0x000000 })
-);
-radio.position.set(0.4, 1.1, 0.35);
-player.add(radio);
-
-const cuffs = radio.clone();
-cuffs.position.x = -0.4;
-player.add(cuffs);
-
-// make this the player controlled model
-player.position.set(0, 0, 0);
-scene.add(player);
-
-    const npc = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.5, 1, 4, 8),
-      new THREE.MeshStandardMaterial({ color: 0xff4444 })
-    );
-    npc.position.set(5, 1, 0);
+    // NPC patrol AI
+    const npc = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 1, 4, 8), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
+    npc.position.set(10, 1, 10);
     scene.add(npc);
+    const npcWaypoints = [
+      new THREE.Vector3(10, 1, 10),
+      new THREE.Vector3(20, 1, 10),
+      new THREE.Vector3(20, 1, 20),
+      new THREE.Vector3(10, 1, 20)
+    ];
+    let npcTarget = 0;
 
-    // Custom police officer model (made from primitives)
-    const policeGroup = new THREE.Group();
-    const torso = new THREE.Mesh(
-      new THREE.BoxGeometry(1, 1.2, 0.6),
-      new THREE.MeshStandardMaterial({ color: 0x0000cc })
-    );
-    torso.position.y = 1.6;
-    policeGroup.add(torso);
-
-    const head = new THREE.Mesh(
-      new THREE.SphereGeometry(0.3, 16, 16),
-      new THREE.MeshStandardMaterial({ color: 0xffcc99 })
-    );
-    head.position.y = 2.3;
-    policeGroup.add(head);
-
-    const hat = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12),
-      new THREE.MeshStandardMaterial({ color: 0x000099 })
-    );
-    hat.position.y = 2.55;
-    policeGroup.add(hat);
-
-    policeGroup.position.set(-5, 0, 0);
-    scene.add(policeGroup);
-
-    camera.position.set(0, 10, 10);
-    camera.lookAt(player.position);
+    function patrolNPC() {
+      const target = npcWaypoints[npcTarget];
+      npc.position.lerp(target, 0.01);
+      if (npc.position.distanceTo(target) < 0.5) npcTarget = (npcTarget + 1) % npcWaypoints.length;
+    }
 
     const joystick = document.getElementById('joystick');
     const handle = document.getElementById('joystick-handle');
     let moveX = 0, moveZ = 0;
-
     joystick.addEventListener('touchmove', e => {
       const touch = e.touches[0];
       const rect = joystick.getBoundingClientRect();
@@ -242,13 +117,11 @@ scene.add(player);
       const offsetY = Math.sin(angle) * dist;
       handle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
       moveX = offsetX / 40;
-moveZ = offsetY / 40;
+      moveZ = offsetY / 40;
     });
-
     joystick.addEventListener('touchend', () => {
       handle.style.transform = 'translate(0px, 0px)';
-      moveX = 0;
-      moveZ = 0;
+      moveX = 0; moveZ = 0;
     });
 
     document.getElementById('interact').addEventListener('click', () => {
@@ -260,7 +133,6 @@ moveZ = offsetY / 40;
 
     let policeTrust = 50;
     let gangTrust = 50;
-
     function adjustTrust(policeDelta, gangDelta) {
       policeTrust = Math.max(0, Math.min(100, policeTrust + policeDelta));
       gangTrust = Math.max(0, Math.min(100, gangTrust + gangDelta));
@@ -270,19 +142,16 @@ moveZ = offsetY / 40;
 
     function animate() {
       requestAnimationFrame(animate);
-
+      patrolNPC();
       player.position.x += moveX * 0.1;
       player.position.z += moveZ * 0.1;
-
       camera.position.x = player.position.x;
       camera.position.z = player.position.z + 10;
       camera.lookAt(player.position);
-
       renderer.render(scene, camera);
     }
 
     animate();
-
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
