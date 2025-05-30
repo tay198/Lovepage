@@ -11,7 +11,7 @@
     #joystick {
       position: absolute;
       bottom: 40px;
-      left: 40px;
+      right: 40px; /* 🎯 Joystick moved to bottom right */
       width: 100px;
       height: 100px;
       background: rgba(255, 255, 255, 0.1);
@@ -33,7 +33,7 @@
     #interact {
       position: absolute;
       bottom: 40px;
-      right: 40px;
+      left: 40px; /* 🔁 Interact button moved to bottom left */
       background: #008cff;
       color: white;
       font-size: 18px;
@@ -65,7 +65,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
   <script>
-    // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111111);
 
@@ -165,7 +164,6 @@
 
     animate();
 
-    // Make canvas resize with screen
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
