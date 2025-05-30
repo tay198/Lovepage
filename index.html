@@ -173,8 +173,8 @@
       const offsetX = Math.cos(angle) * dist;
       const offsetY = Math.sin(angle) * dist;
       handle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      moveX = -offsetX / 40;
-      moveZ = -offsetY / 40;
+      moveX = offsetX / 40;
+moveZ = offsetY / 40;
     });
 
     joystick.addEventListener('touchend', () => {
