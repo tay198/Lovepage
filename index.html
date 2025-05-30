@@ -1,12 +1,13 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Undercover Shift 3D - Wave 1</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Undercover Shift 3D - Waves 1–15</title>
   <style>
     body { margin: 0; overflow: hidden; font-family: monospace; }
     canvas { display: block; }
-    #hud, #dialogue, #interact, #eventLog {
+    #hud, #dialogue, #interact, #eventLog, #inventory, #suspicionMeter, #zoneInfo, #scanner, #skills, #radioControl {
       position: absolute;
       font-family: monospace;
       background: rgba(0,0,0,0.7);
@@ -17,10 +18,18 @@
     #hud { top: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
     .bar { width: 100px; height: 15px; background: #444; border-radius: 10px; overflow: hidden; }
     .bar-fill { height: 100%; transition: width 0.3s; }
-    .police { background: #00ccff; } .gang { background: #ff4444; }
+    .police { background: #00ccff; } 
+    .gang { background: #ff4444; } 
+    .suspicion { background: #ffaa00; }
     #dialogue { bottom: 80px; left: 50%; transform: translateX(-50%); display: none; }
     #eventLog { bottom: 10px; right: 10px; width: 200px; height: 100px; overflow-y: auto; font-size: 12px; }
-    #interact { bottom: 20px; left: 20px; background: #008cff; color: white; border: none; border-radius: 5px; padding: 10px 20px; }
+    #inventory { top: 10px; right: 10px; width: 150px; font-size: 12px; }
+    #suspicionMeter { top: 10px; left: 10px; width: 150px; }
+    #zoneInfo { top: 10px; left: 200px; width: 200px; }
+    #scanner { top: 150px; left: 10px; width: 180px; font-size: 12px; }
+    #skills { bottom: 10px; left: 10px; width: 200px; font-size: 12px; }
+    #radioControl { top: 280px; left: 10px; font-size: 12px; }
+    #interact { bottom: 80px; right: 20px; background: #008cff; color: white; border: none; border-radius: 5px; padding: 10px 20px; }
   </style>
 </head>
 <body>
@@ -28,87 +37,166 @@
     <div class="bar"><div id="policeBar" class="bar-fill police" style="width: 50%"></div></div>
     <div class="bar"><div id="gangBar" class="bar-fill gang" style="width: 50%"></div></div>
   </div>
+  <div id="suspicionMeter">
+    Suspicion<br><div class="bar"><div id="suspicionBar" class="bar-fill suspicion" style="width: 0%"></div></div>
+  </div>
+  <div id="zoneInfo">Zone: Unknown</div>
+  <div id="scanner">Scanner: Standby</div>
   <div id="dialogue">Razor: You lost, cop?</div>
   <div id="eventLog"></div>
-  <button id="interact">Talk</button>  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>  <script>
+  <div id="inventory">Inventory:<br><ul id="items"></ul></div>
+  <div id="skills">Skills:<br>Stealth: <span id="stealth">1</span><br>Strength: <span id="strength">1</span><br>Persuasion: <span id="persuasion">1</span></div>
+  <div id="radioControl">Radio: <button onclick="playRadio()">▶ Play</button> <button onclick="pauseRadio()">❚❚ Pause</button></div>
+  <button id="interact">Talk</button>
+  <audio id="radio" loop>
+    <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/e/e4/Police_radio_chatter.ogg/Police_radio_chatter.ogg.mp3" type="audio/mpeg">
+  </audio>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+  <script>
+    let stealth = 1, strength = 1, persuasion = 1;
+    function levelSkill(skill) {
+      if (skill === 'stealth') document.getElementById('stealth').innerText = ++stealth;
+      if (skill === 'strength') document.getElementById('strength').innerText = ++strength;
+      if (skill === 'persuasion') document.getElementById('persuasion').innerText = ++persuasion;
+    }
+
+    function playRadio() { document.getElementById('radio').play(); }
+    function pauseRadio() { document.getElementById('radio').pause(); }
+
+    setInterval(() => {
+      const alerts = ["Suspicious vehicle on East Blvd", "Burglary in progress", "Backup requested in Southside", "Possible cop in disguise"];
+      document.getElementById('scanner').innerText = "Scanner: " + alerts[Math.floor(Math.random() * alerts.length)];
+    }, 10000);
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-    dirLight.position.set(5, 10, 7);
-    scene.add(ambientLight, dirLight);
-
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x303030 }));
-    ground.rotation.x = -Math.PI / 2;
-    scene.add(ground);
-
     const log = msg => {
       const el = document.getElementById('eventLog');
       const time = new Date().toLocaleTimeString();
       el.innerHTML = `[${time}] ${msg}<br>` + el.innerHTML;
-    }
+    };
 
-    let policeTrust = 50;
-    let gangTrust = 50;
-    function adjustTrust(p, g) {
+    let suspicion = 0;
+    const updateSuspicion = amt => {
+      suspicion = Math.max(0, Math.min(100, suspicion + amt));
+      document.getElementById('suspicionBar').style.width = suspicion + '%';
+      if (suspicion > 75) log("You're too suspicious!");
+    };
+
+    const inventory = [];
+    const updateInventory = () => {
+      const list = document.getElementById('items');
+      list.innerHTML = '';
+      inventory.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        list.appendChild(li);
+      });
+    };
+
+    let policeTrust = 50, gangTrust = 50;
+    const updateTrust = (p, g) => {
       policeTrust = Math.max(0, Math.min(100, policeTrust + p));
       gangTrust = Math.max(0, Math.min(100, gangTrust + g));
       document.getElementById('policeBar').style.width = policeTrust + '%';
       document.getElementById('gangBar').style.width = gangTrust + '%';
-    }
+    };
 
-    // PLAYER
     const player = new THREE.Group();
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x1a237e }));
-    torso.position.y = 1.6; player.add(torso);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.3), new THREE.MeshStandardMaterial({ color: 0xffcc99 }));
-    head.position.y = 2.3; player.add(head);
+    const body = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1), new THREE.MeshStandardMaterial({ color: 0x1a237e }));
+    body.position.y = 1;
+    player.add(body);
     player.position.set(0, 0, 0);
     scene.add(player);
 
-    // GANG NPC PATROL
-    const npc = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
-    npc.position.set(10, 1, 10);
-    scene.add(npc);
-    const npcPath = [
-      new THREE.Vector3(10, 1, 10),
-      new THREE.Vector3(20, 1, 10),
-      new THREE.Vector3(20, 1, 20),
-      new THREE.Vector3(10, 1, 20)
+    const gang = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
+    gang.position.set(10, 1, 10);
+    scene.add(gang);
+
+    const disguise = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshStandardMaterial({ color: 0x00ffcc }));
+    disguise.position.set(-10, 0.25, -10);
+    scene.add(disguise);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x333333 }));
+    ground.rotation.x = -Math.PI / 2;
+    scene.add(ground);
+    const zones = [
+      { name: 'Downtown', x: -50, z: -50, width: 100, depth: 100, control: 'Police' },
+      { name: 'Southside', x: 60, z: 60, width: 80, depth: 80, control: 'Gang' }
     ];
-    let npcIndex = 0;
 
-    function updateNPC() {
-      const target = npcPath[npcIndex];
-      npc.position.lerp(target, 0.01);
-      if (npc.position.distanceTo(target) < 0.5) npcIndex = (npcIndex + 1) % npcPath.length;
-    }
-
-    document.getElementById('interact').onclick = () => {
-      if (player.position.distanceTo(npc.position) < 3) {
-        document.getElementById('dialogue').style.display = 'block';
-        adjustTrust(-3, 5);
-        log("You interacted with Razor.");
+    function getCurrentZone(x, z) {
+      for (const zone of zones) {
+        if (x > zone.x && x < zone.x + zone.width && z > zone.z && z < zone.z + zone.depth) {
+          return zone;
+        }
       }
+      return null;
     }
+
+    const updateZoneInfo = () => {
+      const zone = getCurrentZone(player.position.x, player.position.z);
+      document.getElementById('zoneInfo').innerText = zone ? `Zone: ${zone.name} (${zone.control})` : 'Zone: Unknown';
+    };
 
     let keys = {};
-    document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
-    document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+    document.addEventListener('keydown', e => {
+      keys[e.key.toLowerCase()] = true;
+
+      if (e.key === 'b') {
+        const base = new THREE.Mesh(new THREE.BoxGeometry(3, 2, 3), new THREE.MeshStandardMaterial({ color: 0x888888 }));
+        base.position.copy(player.position).add(new THREE.Vector3(0, 1, 0));
+        scene.add(base);
+        log("Base built.");
+      }
+
+      if (e.key === '1') {
+        inventory.push("Cop Disguise");
+        updateInventory();
+        log("Switched to cop outfit.");
+      }
+
+      if (e.key === '2') {
+        inventory.push("Gang Disguise");
+        updateInventory();
+        log("Switched to gang outfit.");
+      }
+    });
+
+    document.addEventListener('keyup', e => {
+      delete keys[e.key.toLowerCase()];
+    });
+
+    document.getElementById('interact').onclick = () => {
+      if (player.position.distanceTo(disguise.position) < 2 && !inventory.includes("Disguise")) {
+        inventory.push("Disguise");
+        disguise.visible = false;
+        updateInventory();
+        log("You picked up a disguise.");
+        updateSuspicion(-20);
+      } else if (player.position.distanceTo(gang.position) < 3) {
+        document.getElementById('dialogue').style.display = 'block';
+        updateTrust(-5, 10);
+        updateSuspicion(10);
+        log("Talking to gang member.");
+      }
+    };
 
     function animate() {
       requestAnimationFrame(animate);
+      updateZoneInfo();
 
       if (keys['w']) player.position.z -= 0.1;
       if (keys['s']) player.position.z += 0.1;
       if (keys['a']) player.position.x -= 0.1;
       if (keys['d']) player.position.x += 0.1;
-
-      updateNPC();
 
       camera.position.set(player.position.x, 10, player.position.z + 10);
       camera.lookAt(player.position);
@@ -117,10 +205,12 @@
     }
 
     animate();
+
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
-  </script></body>
+    </script>
+</body>
 </html>
