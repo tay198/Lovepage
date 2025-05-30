@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tay's Flappy Game</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -50,7 +51,9 @@
   </div>
   <canvas id="gameCanvas" width="400" height="600"></canvas>
   <audio id="coinSound" src="https://cdn.pixabay.com/download/audio/2023/05/25/audio_d2ccf813a2.mp3?filename=arcade-coin-112155.mp3"></audio>
-  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/03/17/audio_bfedf3b7ff.mp3?filename=funny-game-over-133353.mp3" preload="auto" loop></audio>  <script>
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/03/17/audio_bfedf3b7ff.mp3?filename=funny-game-over-133353.mp3" preload="auto" loop></audio>
+
+  <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -73,7 +76,7 @@
 
     let bird = { x: 50, y: 150, width: 34, height: 24, gravity: 0.25, lift: -5, velocity: 0 };
     let pipes = [], coins = [];
-    let score = 0, highScore = localStorage.getItem("highScore") || 0;
+    let score = 0, highScore = Number(localStorage.getItem("highScore")) || 0;
     let frame = 0;
     let gameOver = false;
     let gameStarted = false;
@@ -86,7 +89,6 @@
       score = 0;
       gameOver = false;
       gameStarted = true;
-      bgMusic.play();
       requestAnimationFrame(gameLoop);
     }
 
@@ -95,6 +97,7 @@
       if (gameOver) return resetGame();
       bird.velocity = bird.lift;
     });
+
     canvas.addEventListener("click", () => {
       if (!gameStarted) return;
       if (gameOver) return resetGame();
@@ -103,6 +106,7 @@
 
     startBtn.addEventListener("click", () => {
       startScreen.style.display = "none";
+      bgMusic.play();
       resetGame();
     });
 
@@ -135,7 +139,10 @@
           gameOver = true;
         }
       });
-      if (bird.y + bird.height > canvas.height || bird.y < 0) gameOver = true;
+
+      if (bird.y + bird.height > canvas.height || bird.y < 0) {
+        gameOver = true;
+      }
 
       coins.forEach(coin => {
         if (!coin.collected &&
@@ -152,6 +159,7 @@
     function drawHUD() {
       ctx.fillStyle = "black";
       ctx.font = "20px Arial";
+      ctx.textAlign = "left";
       ctx.fillText("Score: " + score, 10, 30);
       ctx.fillText("High Score: " + highScore, 10, 60);
     }
@@ -163,8 +171,8 @@
     function moveElements() {
       pipes.forEach(pipe => pipe.x -= 1.5);
       coins.forEach(coin => coin.x -= 1.5);
-      if (pipes.length && pipes[0].x + 52 < 0) pipes.shift();
-      if (coins.length && coins[0].x + 20 < 0) coins.shift();
+      pipes = pipes.filter(pipe => pipe.x + 52 > 0);
+      coins = coins.filter(coin => coin.x + 20 > 0);
     }
 
     function updateBird() {
@@ -174,6 +182,7 @@
 
     function gameLoop() {
       if (!gameStarted) return;
+
       if (gameOver) {
         bgMusic.pause();
         highScore = Math.max(score, highScore);
@@ -182,9 +191,10 @@
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "white";
         ctx.font = "30px Arial";
-        ctx.fillText("Game Over", 120, 250);
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over", canvas.width / 2, 250);
         ctx.font = "20px Arial";
-        ctx.fillText("Click or press to restart", 90, 290);
+        ctx.fillText("Click or press to restart", canvas.width / 2, 290);
         return;
       }
 
@@ -202,5 +212,6 @@
 
       requestAnimationFrame(gameLoop);
     }
-  </script></body>
+  </script>
+</body>
 </html>
