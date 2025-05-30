@@ -1,119 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TayBot Chat</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TayBot - ChatGPT Style</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #e0f7fa;
-      max-width: 600px;
-      margin: auto;
+    * {
+      box-sizing: border-box;
     }
 
-    h1 {
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f8;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #10a37f;
+      color: white;
+      padding: 16px;
       text-align: center;
-      color: #00796b;
-      margin-bottom: 20px;
+      font-size: 20px;
+      font-weight: bold;
     }
 
     #chatbox {
-      width: 100%;
-      height: 400px;
+      flex: 1;
+      padding: 20px;
       overflow-y: auto;
-      border: 2px solid #0097a7;
-      padding: 10px;
-      background: #ffffff;
-      border-radius: 10px;
-      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    input, button, select {
-      padding: 10px;
+    .message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .user {
+      align-self: flex-end;
+      background-color: #d1eaff;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background-color: #e8e8e8;
+    }
+
+    footer {
+      padding: 16px;
+      background: white;
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid #ccc;
+    }
+
+    input, select, button {
       font-size: 16px;
-      width: 100%;
-      margin-top: 5px;
-      box-sizing: border-box;
-      border-radius: 5px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    input {
+      flex: 1;
     }
 
     button {
-      background: #0097a7;
+      background: #10a37f;
       color: white;
       border: none;
       cursor: pointer;
     }
 
+    button:hover {
+      background: #0d8f6b;
+    }
+
     select {
-      background: #f0f0f0;
-      border: 1px solid #0097a7;
-    }
-
-    p {
-      margin: 6px 0;
-      line-height: 1.4;
-    }
-
-    b {
-      color: #00796b;
-    }
-
-    @media (max-width: 480px) {
-      #chatbox {
-        height: 300px;
-      }
+      position: absolute;
+      top: 16px;
+      right: 16px;
     }
   </style>
 </head>
 <body>
-  <h1>Talk to TayBot 🤖</h1>
+  <header>
+    TayBot
+    <select id="mood">
+      <option value="neutral">Normal 🧠</option>
+      <option value="funny">Funny 😂</option>
+      <option value="romantic">Romantic 💖</option>
+      <option value="supportive">Supportive 🤗</option>
+    </select>
+  </header>
 
   <div id="chatbox"></div>
 
-  <select id="mood">
-    <option value="neutral">Normal 🧠</option>
-    <option value="funny">Funny 😂</option>
-    <option value="romantic">Romantic 💖</option>
-    <option value="supportive">Supportive 🤗</option>
-  </select>
-
-  <input type="text" id="userInput" placeholder="Say something..." />
-  <button onclick="sendMessage()">Send</button>
+  <footer>
+    <input type="text" id="userInput" placeholder="Send a message..." />
+    <button onclick="sendMessage()">Send</button>
+  </footer>
 
   <script>
+    const input = document.getElementById("userInput");
+    const mood = document.getElementById("mood");
+    const chatbox = document.getElementById("chatbox");
+
+    function addMessage(text, isBot) {
+      const msg = document.createElement("div");
+      msg.className = `message ${isBot ? "bot" : "user"}`;
+      msg.innerText = text;
+      chatbox.appendChild(msg);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
     function sendMessage() {
-      const input = document.getElementById("userInput");
       const message = input.value.trim();
-      const mood = document.getElementById("mood").value;
-      const chatbox = document.getElementById("chatbox");
-
       if (!message) return;
-
-      chatbox.innerHTML += `<p><b>You:</b> ${message}</p>`;
+      addMessage(message, false);
       input.value = "";
 
       fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message, mood: mood })
+        body: JSON.stringify({ message: message, mood: mood.value })
       })
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
-        chatbox.innerHTML += `<p><b>TayBot:</b> ${data.reply}</p>`;
-        chatbox.scrollTop = chatbox.scrollHeight;
+        addMessage(data.reply, true);
       })
-      .catch(error => {
-        chatbox.innerHTML += `<p><b>TayBot:</b> Sorry, there was an error.</p>`;
+      .catch(() => {
+        addMessage("Sorry, something went wrong.", true);
       });
     }
 
-    // Allow Enter key to send message
-    document.getElementById("userInput").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") {
-        sendMessage();
-      }
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") sendMessage();
     });
   </script>
 </body>
