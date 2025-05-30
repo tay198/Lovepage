@@ -7,7 +7,7 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #70c5ce; /* Sky blue background */
+      background: #70c5ce;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -28,19 +28,17 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Game constants
     const PIPE_WIDTH = 60;
     const PIPE_GAP_HEIGHT = 150;
     const PIPE_SPEED = 2;
     const PIPE_SPAWN_INTERVAL = 90;
 
-    // Game variables
     let bird;
     let pipes = [];
     let score = 0;
     let highScore = 0;
     let frame = 0;
-    let gameState = 'start'; // 'start', 'playing', 'gameOver'
+    let gameState = 'start';
 
     class Bird {
       constructor() {
@@ -49,31 +47,35 @@
         this.width = 34;
         this.height = 24;
         this.velocity = 0;
-        this.gravity = 0.25; // Adjusted from 0.4
-        this.lift = -8;      // Adjusted from -7
+        this.gravity = 0.25;
+        this.lift = -8;
+        this.hasFlapped = false; // <- added
       }
 
       draw() {
-        ctx.fillStyle = "#FFD700"; // Gold color
+        ctx.fillStyle = "#FFD700";
         ctx.beginPath();
         ctx.arc(this.x, this.y, 12, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "#DAA520"; // Goldenrod
+        ctx.strokeStyle = "#DAA520";
         ctx.stroke();
       }
 
       update() {
-        this.velocity += this.gravity;
-        this.y += this.velocity;
+        if (this.hasFlapped) {
+          this.velocity += this.gravity;
+          this.y += this.velocity;
 
-        if (this.y < 0) {
-          this.y = 0;
-          this.velocity = 0;
+          if (this.y < 0) {
+            this.y = 0;
+            this.velocity = 0;
+          }
         }
       }
 
       flap() {
         this.velocity = this.lift;
+        this.hasFlapped = true; // <- set when first flap occurs
       }
     }
 
@@ -87,17 +89,15 @@
       }
 
       draw() {
-        const pipeColor = "#228B22"; // Forest Green
-        const rimColor = "#006400";  // Dark Green
+        const pipeColor = "#228B22";
+        const rimColor = "#006400";
         const rimHeight = 10;
 
-        // Top pipe
         ctx.fillStyle = pipeColor;
         ctx.fillRect(this.x, 0, this.width, this.top);
         ctx.fillStyle = rimColor;
         ctx.fillRect(this.x - 2, this.top - rimHeight, this.width + 4, rimHeight);
 
-        // Bottom pipe
         ctx.fillStyle = pipeColor;
         ctx.fillRect(this.x, this.bottom, this.width, canvas.height - this.bottom);
         ctx.fillStyle = rimColor;
@@ -122,12 +122,10 @@
     }
 
     function detectCollisions() {
-      // Ground or ceiling
       if (bird.y + bird.height > canvas.height || bird.y < 0) {
         gameState = 'gameOver';
       }
 
-      // Pipes
       pipes.forEach(pipe => {
         if (
           bird.x < pipe.x + pipe.width &&
