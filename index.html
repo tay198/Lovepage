@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TayBot Pro - Enhanced HTML Interface</title>
+  <title>TayBot Pro - Enhanced & Mobile Optimized</title>
   <style>
     /* Basic Reset & Page Layout */
     :root {
@@ -37,17 +37,17 @@
     [data-theme="dark"] {
       --primary-bg: #1a1a1a;
       --secondary-bg: #2c2c2c;
-      --sidebar-bg: #1f2937; /* Darker blue-grey */
-      --sidebar-text: #d1d5db; /* Lighter grey */
+      --sidebar-bg: #1f2937; 
+      --sidebar-text: #d1d5db; 
       --sidebar-highlight-bg: #374151;
       --sidebar-border: #374151;
       --header-bg: #242424;
       --header-text: #e0e0e0;
       --header-border: #3a3a3a;
       --chatbox-bg: #202020;
-      --user-msg-bg: #0056b3; /* Darker blue for user messages */
+      --user-msg-bg: #0056b3; 
       --user-msg-text: #e0e0e0;
-      --bot-msg-bg: #383838; /* Darker grey for bot messages */
+      --bot-msg-bg: #383838; 
       --bot-msg-text: #e0e0e0;
       --input-area-bg: #242424;
       --input-border: #444;
@@ -88,7 +88,7 @@
       padding: 15px;
       border-right: 1px solid var(--sidebar-border);
       transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-      z-index: 100; /* Keep sidebar above chat area during transition */
+      z-index: 100;
     }
     .sidebar-header {
       padding-bottom: 15px;
@@ -109,7 +109,7 @@
         cursor: pointer;
     }
      .sidebar-close-button {
-        display: none; /* Hidden by default, shown on mobile when open */
+        display: none; 
     }
 
     .new-chat-button {
@@ -185,17 +185,16 @@
         background-color: var(--sidebar-bg);
      }
 
-
     /* Main Chat Area Styling */
     .chat-area {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
       background-color: var(--secondary-bg);
-      position: relative; /* For mobile menu button */
+      position: relative; 
     }
     .mobile-menu-button {
-        display: none; /* Hidden by default, shown on mobile */
+        display: none; 
         position: absolute;
         top: 10px;
         left: 10px;
@@ -214,15 +213,15 @@
       padding: 12px 20px;
       border-bottom: 1px solid var(--header-border);
       display: flex;
-      justify-content: center; /* Center title by default */
+      justify-content: center; 
       align-items: center;
       text-align: center;
-      position: relative; /* For actions */
-      min-height: 57px; /* Match mobile menu button height + padding */
+      position: relative; 
+      min-height: 57px; 
     }
-     .chat-header.shifted { /* When mobile menu button is present */
-        padding-left: 60px; /* Space for menu button */
-        justify-content: flex-start; /* Align title left */
+     .chat-header.shifted { 
+        padding-left: 60px; 
+        justify-content: flex-start; 
         text-align: left;
     }
     .chat-header h2 {
@@ -232,11 +231,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    /* .chat-header-actions (can be added if needed for desktop options) */
 
     #chatbox {
       flex-grow: 1;
-      padding: 15px;
+      padding: 15px; /* Default padding */
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -244,20 +242,20 @@
       background-color: var(--chatbox-bg);
     }
     .message {
-      max-width: 75%;
-      padding: 10px 14px;
+      max-width: 75%; /* Default max-width */
+      padding: 10px 14px; /* Default padding */
       border-radius: var(--border-radius-md);
-      font-size: 15px;
+      font-size: 15px; /* Default font-size */
       line-height: 1.5;
       word-wrap: break-word;
       box-shadow: var(--shadow-sm);
       position: relative;
     }
     .message .timestamp {
-        font-size: 10px;
+        font-size: 10px; /* Default timestamp size */
         color: var(--text-muted);
         display: block;
-        margin-top: 5px;
+        margin-top: 5px; /* Default margin */
         text-align: right;
     }
     .user {
@@ -266,7 +264,7 @@
       color: var(--user-msg-text);
       border-bottom-right-radius: var(--border-radius-sm);
     }
-    .user .timestamp { color: #e0e0e0cc; } /* Lighter for dark bg */
+    .user .timestamp { color: #e0e0e0cc; } 
     .bot {
       align-self: flex-start;
       background-color: var(--bot-msg-bg);
@@ -275,29 +273,28 @@
     }
     .bot .timestamp { color: var(--text-muted); }
 
-
     .typing-indicator {
-        padding: 0px 15px 5px; /* Reduced padding */
+        padding: 0px 15px 5px; 
         font-style: italic;
         color: var(--text-muted);
-        height: 20px; /* Reserve space */
+        height: 20px; 
         font-size: 13px;
     }
     .chat-input-area {
-      padding: 10px 15px;
+      padding: 10px 15px; /* Default padding */
       background: var(--input-area-bg);
-      border-top: 1px solid var(--header-border); /* Use header border color */
+      border-top: 1px solid var(--header-border); 
       display: flex;
-      gap: 10px;
+      gap: 10px; /* Default gap */
       align-items: center;
     }
     .chat-input-area input[type="text"] {
       flex-grow: 1;
-      padding: 12px 18px;
+      padding: 12px 18px; /* Default padding */
       border: 1px solid var(--input-border);
       border-radius: var(--border-radius-lg);
-      font-size: 16px;
-      background-color: var(--secondary-bg); /* Match chat area for consistency */
+      font-size: 16px; /* Default font-size */
+      background-color: var(--secondary-bg); 
       color: var(--text-color);
     }
     .chat-input-area input[type="text"]:focus {
@@ -309,15 +306,16 @@
       background-color: var(--button-primary-bg);
       color: white;
       border: none;
-      width: 45px; /* Square-ish button */
-      height: 45px;
-      border-radius: 50%; /* Circular send button */
-      font-size: 20px; /* Icon size */
+      width: 45px; /* Default width */
+      height: 45px; /* Default height */
+      border-radius: 50%; 
+      font-size: 20px; /* Default icon size */
       cursor: pointer;
       transition: background-color 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0; /* Added from fix */
     }
     .chat-input-area button:hover {
       background-color: var(--button-primary-hover-bg);
@@ -325,49 +323,66 @@
 
     /* Scrollbar Styling */
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; } /* Use chatbox bg */
+    ::-webkit-scrollbar-track { background: transparent; } 
     ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
     [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #555; }
     ::-webkit-scrollbar-thumb:hover { background: #aaa; }
     [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #777; }
 
-    /* Mobile Responsiveness */
+    /* Mobile Responsiveness - WITH FIXES APPLIED */
     @media (max-width: 768px) {
       .sidebar {
         position: absolute;
         top: 0;
         left: 0;
         height: 100%;
-        transform: translateX(-100%); /* Hidden by default */
+        transform: translateX(-100%); 
         box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        /* width: 280px; Maintain width when open or adjust as needed */
       }
       .sidebar.open {
         transform: translateX(0);
       }
       .sidebar-close-button {
-        display: block; /* Show close button on mobile when sidebar is open */
+        display: block; 
       }
       .mobile-menu-button {
-        display: block; /* Show hamburger menu button */
+        display: block; 
       }
-      .chat-header { /* Adjust chat header when mobile menu is visible */
+      .chat-header { 
          padding-left: 55px; /* Make space for menu button */
          justify-content: flex-start;
       }
-      .message {
-        max-width: 85%; /* Allow messages to be a bit wider on mobile */
+
+      /* CHATBOX and MESSAGES on MOBILE - Updated */
+      #chatbox {
+        padding: 10px 12px; /* Slightly reduced padding for more message space */
       }
+      .message {
+        max-width: 85%;    /* Allow messages to be a bit wider */
+        font-size: 14px;   /* Slightly smaller message font */
+        padding: 8px 12px; /* Slightly smaller message bubble padding */
+      }
+      .message .timestamp {
+        font-size: 9px;    /* Smaller timestamp text */
+        margin-top: 4px;   /* Adjust spacing if needed */
+      }
+
+      /* INPUT AREA on MOBILE - Updated with fixes */
       .chat-input-area {
-        padding: 8px 10px;
+        padding: 8px 10px;  /* Reduced padding for the entire input bar */
+        gap: 8px;           /* Slightly reduced gap between input and button */
+        align-items: center;/* Vertically align items */
       }
       .chat-input-area input[type="text"] {
-        padding: 10px 15px;
-        font-size: 15px;
+        padding: 10px 15px; /* Optimized padding for the text input field */
+        font-size: 15px;    /* Good font size for mobile readability */
       }
-      .chat-input-area button {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
+      .chat-input-area button { /* Send button */
+        width: 40px;        /* Optimized size for tapping */
+        height: 40px;       /* Optimized size for tapping */
+        font-size: 18px;    /* Icon size, good for clarity */
+        /* flex-shrink: 0; is already set by default rules, ensure it's not overridden if an issue */
       }
     }
   </style>
@@ -445,7 +460,7 @@
     // --- Application State & Constants ---
     const APP_PREFIX = "taybotPro_";
     let currentChatId = null;
-    let chats = {}; // Object to store all chats: { chatId: { name: "...", messages: [] } }
+    let chats = {}; 
     let botMemory = {
         userName: null,
         lastTopic: null
@@ -483,22 +498,21 @@
         if (storedChats) {
             chats = JSON.parse(storedChats);
         } else {
-            // Initialize with a default chat if none exist
-            startNewChat(false); // Don't switch to it if other chats exist and one is active
+            startNewChat(false); 
         }
         const lastActiveChatId = localStorage.getItem(APP_PREFIX + 'activeChatId');
         if (lastActiveChatId && chats[lastActiveChatId]) {
             switchToChat(lastActiveChatId);
         } else if (Object.keys(chats).length > 0) {
-            switchToChat(Object.keys(chats)[0]); // Switch to the first available chat
+            switchToChat(Object.keys(chats)[0]); 
         } else {
-             startNewChat(true); // if no chats at all, create and switch
+             startNewChat(true); 
         }
         renderChatHistory();
     }
 
     function addMessageToChat(chatId, text, sender, timestamp) {
-        if (!chats[chatId]) return; // Should not happen if chat is active
+        if (!chats[chatId]) return; 
 
         const message = { text, sender, timestamp };
         chats[chatId].messages.push(message);
@@ -572,7 +586,7 @@
         updateActiveChatInHistory();
         userInputElement.focus();
          if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open'); // Close sidebar on mobile after switching chat
+            sidebar.classList.remove('open'); 
         }
     }
 
@@ -598,7 +612,6 @@
         }
     }
 
-
     // --- "Smarter" Mock Bot Logic ---
     function showTypingIndicator(isTyping) {
         typingIndicatorElement.textContent = isTyping ? "TayBot Pro is typing..." : "";
@@ -610,7 +623,6 @@
         let reply = "I'm still learning the ropes of this complex interface! Can you rephrase?";
         const timestamp = getCurrentTimestamp();
 
-        // Memory: Try to remember user's name
         const nameRegex = /my name is (\w+)/i;
         const nameMatch = userMessage.match(nameRegex);
         if (nameMatch && nameMatch[1]) {
@@ -621,7 +633,6 @@
             return;
         }
 
-        // General Responses by Mood
         switch (mood) {
             case "friendly":
                 if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
@@ -687,7 +698,7 @@
                 break;
         }
         
-        botMemory.lastTopic = lowerMessage; // Basic topic memory
+        botMemory.lastTopic = lowerMessage; 
 
         setTimeout(() => {
             addMessageToChat(currentChatId, reply, 'bot', timestamp);
@@ -710,8 +721,8 @@
     // --- Event Listeners ---
     sendButton.addEventListener("click", handleSendMessage);
     userInputElement.addEventListener("keypress", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) { // Send on Enter, allow Shift+Enter for newline (though input is single line)
-        e.preventDefault(); // Prevent default form submission or newline in single-line input
+      if (e.key === "Enter" && !e.shiftKey) { 
+        e.preventDefault(); 
         handleSendMessage();
       }
     });
@@ -723,7 +734,6 @@
     mobileMenuBtn.addEventListener("click", () => sidebar.classList.toggle('open'));
     sidebarCloseBtn.addEventListener("click", () => sidebar.classList.remove('open'));
     
-    // Close sidebar if user clicks outside of it on mobile
     document.addEventListener('click', function(event) {
         if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
             const isClickInsideSidebar = sidebar.contains(event.target);
@@ -734,12 +744,11 @@
         }
     });
 
-
     // --- Initialization ---
     function initializeApp() {
         const savedTheme = localStorage.getItem(APP_PREFIX + 'theme') || 'light';
         applyTheme(savedTheme);
-        loadChats(); // This will also handle initial chat setup if none exist
+        loadChats(); 
         
         if (window.innerWidth <= 768) {
             chatHeader.classList.add('shifted');
@@ -747,7 +756,6 @@
             chatHeader.classList.remove('shifted');
         }
 
-        // Add a default welcome message to the first chat if it's brand new
         if (currentChatId && chats[currentChatId] && chats[currentChatId].messages.length === 0) {
              addMessageToChat(currentChatId, "Welcome to TayBot Pro! I can save your chats now. Try telling me your name!", 'bot', getCurrentTimestamp());
         }
@@ -757,12 +765,12 @@
     window.addEventListener('resize', () => {
         if (window.innerWidth <= 768) {
             chatHeader.classList.add('shifted');
-             if (!sidebar.classList.contains('open')) { // Ensure sidebar isn't stuck open on resize
+             if (!sidebar.classList.contains('open')) { 
                 sidebar.classList.remove('open');
             }
         } else {
             chatHeader.classList.remove('shifted');
-            sidebar.classList.remove('open'); // Ensure sidebar is not in mobile 'open' state on desktop
+            sidebar.classList.remove('open'); 
         }
     });
 
@@ -771,4 +779,3 @@
   </script>
 </body>
 </html>
-
