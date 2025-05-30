@@ -30,7 +30,7 @@
 
     const PIPE_WIDTH = 60;
     const PIPE_GAP_HEIGHT = 150;
-    const PIPE_SPEED = 2;
+    const PIPE_SPEED = 1; // Half speed for easier gameplay
     const PIPE_SPAWN_INTERVAL = 90;
 
     let bird;
@@ -48,7 +48,7 @@
         this.height = 24;
         this.velocity = 0;
         this.gravity = 0.25;
-        this.lift = -6; // Less extreme jump
+        this.lift = -6;
         this.hasFlapped = false;
       }
 
@@ -122,15 +122,26 @@
     }
 
     function detectCollisions() {
+      const margin = 4; // smaller hitbox for forgiveness
+
       if (bird.y + bird.height > canvas.height || bird.y < 0) {
         gameState = 'gameOver';
+        return;
       }
 
       pipes.forEach(pipe => {
+        const birdLeft = bird.x + margin;
+        const birdRight = bird.x + bird.width - margin;
+        const birdTop = bird.y + margin;
+        const birdBottom = bird.y + bird.height - margin;
+
+        const pipeLeft = pipe.x;
+        const pipeRight = pipe.x + pipe.width;
+
         if (
-          bird.x < pipe.x + pipe.width &&
-          bird.x + bird.width > pipe.x &&
-          (bird.y < pipe.top || bird.y + bird.height > pipe.bottom)
+          birdRight > pipeLeft &&
+          birdLeft < pipeRight &&
+          (birdTop < pipe.top || birdBottom > pipe.bottom)
         ) {
           gameState = 'gameOver';
         }
@@ -184,6 +195,9 @@
         ctx.textAlign = "center";
         ctx.font = "30px 'Press Start 2P'";
         ctx.fillText("Click or Space to Start", canvas.width / 2, canvas.height / 2);
+
+        bird.draw();
+        pipes.forEach(pipe => pipe.draw());
       } else if (gameState === 'playing') {
         frame++;
 
@@ -193,7 +207,6 @@
 
         bird.update();
         pipes.forEach(pipe => pipe.update());
-
         pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
 
         pipes.forEach(pipe => pipe.draw());
@@ -202,6 +215,8 @@
         detectCollisions();
         drawHUD();
       } else if (gameState === 'gameOver') {
+        pipes.forEach(pipe => pipe.draw());
+        bird.draw();
         highScore = Math.max(score, highScore);
         drawGameOverScreen();
       }
