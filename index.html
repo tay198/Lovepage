@@ -222,17 +222,26 @@
     class Pipe {
       constructor(x) {
         this.x = x;
-        this.width = PIPE_WIDTH;
+        this.width = PIPE_WIDTH; // Fixed width for pipes
         // Randomize the top pipe height, ensuring enough space for the gap and margins
-        this.top = Math.random() * (canvas.height - PIPE_GAP_HEIGHT - 150) + 50; // Min 50px from top, max ensures bottom pipe fits
+        // Adjusted range to ensure pipes look correct with the new sprites
+        this.top = Math.random() * (canvas.height - PIPE_GAP_HEIGHT - 200) + 70; // Min 70px from top, max ensures bottom pipe fits
         this.bottom = this.top + PIPE_GAP_HEIGHT;
         this.passed = false; // To track if bird has passed it for scoring
       }
 
       draw() {
         if (!assets.pipeTop || !assets.pipeBottom) return; // Don't draw if images not loaded
-        ctx.drawImage(assets.pipeTop, this.x, this.top - 320, this.width, 320); // Pipe images are typically tall
-        ctx.drawImage(assets.pipeBottom, this.x, this.bottom, this.width, 320);
+
+        // Define the assumed height of the visual pipe segment in the sprite
+        // The images from samuelcust/flappy-bird-assets are long sheets,
+        // but the visible part of the pipe is 320px tall for top/bottom segments.
+        const pipeSpriteVisualHeight = 320;
+
+        // Draw the top pipe: its bottom edge should be at `this.top`
+        ctx.drawImage(assets.pipeTop, this.x, this.top - pipeSpriteVisualHeight, this.width, pipeSpriteVisualHeight);
+        // Draw the bottom pipe: its top edge should be at `this.bottom`
+        ctx.drawImage(assets.pipeBottom, this.x, this.bottom, this.width, pipeSpriteVisualHeight);
       }
 
       update() {
@@ -287,7 +296,7 @@
       document.addEventListener("keydown", handleInput);
       canvas.addEventListener("click", handleInput);
       startBtn.addEventListener("click", () => {
-          startScreen.style.display = 'none';
+          startScreen.style.display = 'none'; // Hide the start screen
           resetGame(); // Reset game state and start playing
           bgMusic.play().catch(err => console.log("Background music failed to play:", err));
       });
@@ -303,9 +312,9 @@
       }
 
       if (gameState === 'ready') {
-        // This state is handled by the start button now, but this provides a fallback
-        // if user clicks/keys before start button is clicked
-        if (startScreen.style.display !== 'none') { // Only if start screen is visible
+        // If the start screen is still visible, and user presses key/clicks,
+        // it means they want to skip the button and start.
+        if (startScreen.style.display !== 'none') {
             startScreen.style.display = 'none';
             resetGame();
             bgMusic.play().catch(err => console.log("Background music failed to play:", err));
@@ -453,8 +462,9 @@
       ctx.strokeText("Score: " + score, canvas.width / 2, canvas.height / 2);
       ctx.fillText("Score: " + score, canvas.width / 2, canvas.height / 2);
 
-      ctx.strokeText("High Score: " + highScore, canvas.width / 2, canvas.height / 2 + 40);
-      ctx.fillText("High Score: " + highScore, canvas.width / 2, canvas.height / 2 + 40);
+      ctx.font = "18px 'Press Start 2P'";
+      ctx.strokeText("High Score: " + highScore, canvas.width / 2, canvas.height / 2 + 40); // Adjusted Y for score
+      ctx.fillText("High Score: " + highScore, canvas.width / 2, canvas.height / 2 + 40); // Adjusted Y for score
 
       ctx.font = "18px 'Press Start 2P'";
       ctx.strokeText("Click or Space to Restart", canvas.width / 2, canvas.height / 2 + 100);
@@ -467,10 +477,9 @@
       drawBackground();
 
       if (gameState === 'loading') {
-        // Do nothing specific here, loading screen is handled by CSS display
+        // Loading screen is visible via CSS, no active drawing here
       } else if (gameState === 'ready') {
-        // Game is ready, but waiting for user to click "Start Game" button
-        // The startScreen div handles this display
+        // Start screen is visible via CSS, no active drawing here
       } else if (gameState === 'playing') {
         frame++; // Increment frame count
 
@@ -512,4 +521,3 @@
   </script>
 </body>
 </html>
-
