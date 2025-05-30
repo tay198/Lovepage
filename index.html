@@ -48,8 +48,8 @@
         this.height = 24;
         this.velocity = 0;
         this.gravity = 0.25;
-        this.lift = -8;
-        this.hasFlapped = false; // <- added
+        this.lift = -6; // Less extreme jump
+        this.hasFlapped = false;
       }
 
       draw() {
@@ -75,7 +75,7 @@
 
       flap() {
         this.velocity = this.lift;
-        this.hasFlapped = true; // <- set when first flap occurs
+        this.hasFlapped = true;
       }
     }
 
