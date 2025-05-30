@@ -1,153 +1,118 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Undercover Shift 3D</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undercover Shift 3D - Wave 1</title>
   <style>
     body { margin: 0; overflow: hidden; font-family: monospace; }
     canvas { display: block; }
-    #joystick, #joystick-handle, #interact, #dialogue, #hud, .bar, .bar-fill {
-      touch-action: none;
+    #hud, #dialogue, #interact, #eventLog {
+      position: absolute;
+      font-family: monospace;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
     }
-    #joystick {
-      position: absolute; bottom: 40px; right: 40px; width: 100px; height: 100px;
-      background: rgba(255, 255, 255, 0.1); border-radius: 50%;
-    }
-    #joystick-handle {
-      width: 50px; height: 50px; background: #00ffff; border-radius: 50%;
-      position: relative; left: 25px; top: 25px;
-    }
-    #interact {
-      position: absolute; bottom: 40px; left: 40px; background: #008cff;
-      color: white; font-size: 18px; padding: 15px 25px; border: none;
-      border-radius: 12px; font-family: monospace;
-    }
-    #dialogue, #hud {
-      position: absolute; left: 50%; transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.7); color: white;
-      padding: 10px 20px; border-radius: 10px; display: none;
-    }
-    #dialogue { bottom: 100px; }
-    #hud { top: 20px; display: flex; gap: 20px; }
-    .bar { width: 120px; height: 20px; background: #444; border-radius: 10px; overflow: hidden; }
-    .bar-fill { height: 100%; transition: width 0.2s; }
+    #hud { top: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+    .bar { width: 100px; height: 15px; background: #444; border-radius: 10px; overflow: hidden; }
+    .bar-fill { height: 100%; transition: width 0.3s; }
     .police { background: #00ccff; } .gang { background: #ff4444; }
+    #dialogue { bottom: 80px; left: 50%; transform: translateX(-50%); display: none; }
+    #eventLog { bottom: 10px; right: 10px; width: 200px; height: 100px; overflow-y: auto; font-size: 12px; }
+    #interact { bottom: 20px; left: 20px; background: #008cff; color: white; border: none; border-radius: 5px; padding: 10px 20px; }
   </style>
 </head>
 <body>
-  <div id="dialogue">Razor: You lost, cop?</div>
   <div id="hud">
     <div class="bar"><div id="policeBar" class="bar-fill police" style="width: 50%"></div></div>
     <div class="bar"><div id="gangBar" class="bar-fill gang" style="width: 50%"></div></div>
   </div>
-  <div id="joystick"><div id="joystick-handle"></div></div>
+  <div id="dialogue">Razor: You lost, cop?</div>
+  <div id="eventLog"></div>
   <button id="interact">Talk</button>  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>  <script>
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x222222);
-
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 10, 7);
-    scene.add(ambientLight, directionalLight);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 7);
+    scene.add(ambientLight, dirLight);
 
-    const ground = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshStandardMaterial({ color: 0x303030 }));
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x303030 }));
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    // Generate a large city block layout
-    for (let i = 0; i < 100; i++) {
-      const building = new THREE.Mesh(
-        new THREE.BoxGeometry(5, Math.random() * 15 + 5, 5),
-        new THREE.MeshStandardMaterial({ color: 0x444444 })
-      );
-      building.position.set((Math.random() - 0.5) * 400, building.geometry.parameters.height / 2, (Math.random() - 0.5) * 400);
-      scene.add(building);
+    const log = msg => {
+      const el = document.getElementById('eventLog');
+      const time = new Date().toLocaleTimeString();
+      el.innerHTML = `[${time}] ${msg}<br>` + el.innerHTML;
     }
 
-    // Custom player officer
+    let policeTrust = 50;
+    let gangTrust = 50;
+    function adjustTrust(p, g) {
+      policeTrust = Math.max(0, Math.min(100, policeTrust + p));
+      gangTrust = Math.max(0, Math.min(100, gangTrust + g));
+      document.getElementById('policeBar').style.width = policeTrust + '%';
+      document.getElementById('gangBar').style.width = gangTrust + '%';
+    }
+
+    // PLAYER
     const player = new THREE.Group();
     const torso = new THREE.Mesh(new THREE.BoxGeometry(1, 1.2, 0.6), new THREE.MeshStandardMaterial({ color: 0x1a237e }));
     torso.position.y = 1.6; player.add(torso);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffcc99 }));
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.3), new THREE.MeshStandardMaterial({ color: 0xffcc99 }));
     head.position.y = 2.3; player.add(head);
-    const hat = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12), new THREE.MeshStandardMaterial({ color: 0x0d47a1 }));
-    hat.position.y = 2.55; player.add(hat);
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.05, 12), new THREE.MeshStandardMaterial({ color: 0x0d47a1 }));
-    brim.position.y = 2.5; player.add(brim);
-    const leftLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 1.2, 12), new THREE.MeshStandardMaterial({ color: 0x0d47a1 }));
-    leftLeg.position.set(-0.3, 0.6, 0); player.add(leftLeg);
-    const rightLeg = leftLeg.clone(); rightLeg.position.x = 0.3; player.add(rightLeg);
     player.position.set(0, 0, 0);
     scene.add(player);
 
-    // NPC patrol AI
-    const npc = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 1, 4, 8), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
+    // GANG NPC PATROL
+    const npc = new THREE.Mesh(new THREE.BoxGeometry(1, 2, 1), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
     npc.position.set(10, 1, 10);
     scene.add(npc);
-    const npcWaypoints = [
+    const npcPath = [
       new THREE.Vector3(10, 1, 10),
       new THREE.Vector3(20, 1, 10),
       new THREE.Vector3(20, 1, 20),
       new THREE.Vector3(10, 1, 20)
     ];
-    let npcTarget = 0;
+    let npcIndex = 0;
 
-    function patrolNPC() {
-      const target = npcWaypoints[npcTarget];
+    function updateNPC() {
+      const target = npcPath[npcIndex];
       npc.position.lerp(target, 0.01);
-      if (npc.position.distanceTo(target) < 0.5) npcTarget = (npcTarget + 1) % npcWaypoints.length;
+      if (npc.position.distanceTo(target) < 0.5) npcIndex = (npcIndex + 1) % npcPath.length;
     }
 
-    const joystick = document.getElementById('joystick');
-    const handle = document.getElementById('joystick-handle');
-    let moveX = 0, moveZ = 0;
-    joystick.addEventListener('touchmove', e => {
-      const touch = e.touches[0];
-      const rect = joystick.getBoundingClientRect();
-      const dx = touch.clientX - (rect.left + rect.width / 2);
-      const dy = touch.clientY - (rect.top + rect.height / 2);
-      const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
-      const angle = Math.atan2(dy, dx);
-      const offsetX = Math.cos(angle) * dist;
-      const offsetY = Math.sin(angle) * dist;
-      handle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      moveX = offsetX / 40;
-      moveZ = offsetY / 40;
-    });
-    joystick.addEventListener('touchend', () => {
-      handle.style.transform = 'translate(0px, 0px)';
-      moveX = 0; moveZ = 0;
-    });
-
-    document.getElementById('interact').addEventListener('click', () => {
-      if (player.position.distanceTo(npc.position) < 2) {
+    document.getElementById('interact').onclick = () => {
+      if (player.position.distanceTo(npc.position) < 3) {
         document.getElementById('dialogue').style.display = 'block';
-        adjustTrust(-5, 10);
+        adjustTrust(-3, 5);
+        log("You interacted with Razor.");
       }
-    });
-
-    let policeTrust = 50;
-    let gangTrust = 50;
-    function adjustTrust(policeDelta, gangDelta) {
-      policeTrust = Math.max(0, Math.min(100, policeTrust + policeDelta));
-      gangTrust = Math.max(0, Math.min(100, gangTrust + gangDelta));
-      document.getElementById('policeBar').style.width = policeTrust + '%';
-      document.getElementById('gangBar').style.width = gangTrust + '%';
     }
+
+    let keys = {};
+    document.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+    document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
 
     function animate() {
       requestAnimationFrame(animate);
-      patrolNPC();
-      player.position.x += moveX * 0.1;
-      player.position.z += moveZ * 0.1;
-      camera.position.x = player.position.x;
-      camera.position.z = player.position.z + 10;
+
+      if (keys['w']) player.position.z -= 0.1;
+      if (keys['s']) player.position.z += 0.1;
+      if (keys['a']) player.position.x -= 0.1;
+      if (keys['d']) player.position.x += 0.1;
+
+      updateNPC();
+
+      camera.position.set(player.position.x, 10, player.position.z + 10);
       camera.lookAt(player.position);
+
       renderer.render(scene, camera);
     }
 
