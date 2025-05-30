@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flappy Bird - Canvas Version</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -14,7 +13,6 @@
       align-items: center;
       height: 100vh;
       font-family: 'Press Start 2P', cursive;
-      overflow: hidden;
     }
     canvas {
       border: 5px solid #333;
@@ -32,7 +30,7 @@
 
     const PIPE_WIDTH = 60;
     const PIPE_GAP_HEIGHT = 150;
-    const PIPE_SPEED = 1;
+    const PIPE_SPEED = 2;
     const PIPE_SPAWN_INTERVAL = 90;
 
     let bird;
@@ -50,14 +48,14 @@
         this.height = 24;
         this.velocity = 0;
         this.gravity = 0.25;
-        this.lift = -6;
-        this.hasFlapped = false;
+        this.lift = -8;
+        this.hasFlapped = false; // <- added
       }
 
       draw() {
         ctx.fillStyle = "#FFD700";
         ctx.beginPath();
-        ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 12, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, 12, 0, Math.PI * 2);
         ctx.fill();
         ctx.strokeStyle = "#DAA520";
         ctx.stroke();
@@ -72,19 +70,12 @@
             this.y = 0;
             this.velocity = 0;
           }
-
-          if (this.y + this.height > canvas.height) {
-            this.y = canvas.height - this.height;
-            if (gameState !== 'gameOver') {
-              this.velocity = 0;
-            }
-          }
         }
       }
 
       flap() {
         this.velocity = this.lift;
-        this.hasFlapped = true;
+        this.hasFlapped = true; // <- set when first flap occurs
       }
     }
 
@@ -131,26 +122,15 @@
     }
 
     function detectCollisions() {
-      const margin = 4;
-
       if (bird.y + bird.height > canvas.height || bird.y < 0) {
         gameState = 'gameOver';
-        return;
       }
 
       pipes.forEach(pipe => {
-        const birdLeft = bird.x + margin;
-        const birdRight = bird.x + bird.width - margin;
-        const birdTop = bird.y + margin;
-        const birdBottom = bird.y + bird.height - margin;
-
-        const pipeLeft = pipe.x;
-        const pipeRight = pipe.x + pipe.width;
-
         if (
-          birdRight > pipeLeft &&
-          birdLeft < pipeRight &&
-          (birdTop < pipe.top || birdBottom > pipe.bottom)
+          bird.x < pipe.x + pipe.width &&
+          bird.x + bird.width > pipe.x &&
+          (bird.y < pipe.top || bird.y + bird.height > pipe.bottom)
         ) {
           gameState = 'gameOver';
         }
@@ -204,7 +184,6 @@
         ctx.textAlign = "center";
         ctx.font = "30px 'Press Start 2P'";
         ctx.fillText("Click or Space to Start", canvas.width / 2, canvas.height / 2);
-        bird.draw();
       } else if (gameState === 'playing') {
         frame++;
 
@@ -214,6 +193,7 @@
 
         bird.update();
         pipes.forEach(pipe => pipe.update());
+
         pipes = pipes.filter(pipe => pipe.x + pipe.width > 0);
 
         pipes.forEach(pipe => pipe.draw());
@@ -222,8 +202,6 @@
         detectCollisions();
         drawHUD();
       } else if (gameState === 'gameOver') {
-        pipes.forEach(pipe => pipe.draw());
-        bird.draw();
         highScore = Math.max(score, highScore);
         drawGameOverScreen();
       }
@@ -238,18 +216,15 @@
 
       if (gameState === 'start') {
         resetGame();
-        bird.flap(); // Start with a flap
       } else if (gameState === 'playing') {
         bird.flap();
       } else if (gameState === 'gameOver') {
         resetGame();
-        bird.flap();
       }
     }
 
     document.addEventListener("keydown", handleInput);
     canvas.addEventListener("click", handleInput);
-    canvas.addEventListener("touchstart", handleInput); // Mobile
 
     gameLoop();
   </script>
