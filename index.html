@@ -3,81 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Undercover Cop Game</title>
+    <title>Undercover Cop Game - Basic Movement</title>
     <style>
-        /* Basic styling for layout visualization - you'll want a proper CSS file */
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #333; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .game-container { border: 2px solid #555; background-color: #444; width: 100%; max-width: 800px; /* Or 100vw for full screen */ height: 600px; /* Or 100vh */ position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #333; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; touch-action: none; /* Prevents page scrolling on touch */ }
+        .game-container { border: 2px solid #555; background-color: #444; width: 100%; max-width: 800px; height: 600px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
 
-        .game-world { background-color: #222; flex-grow: 1; position: relative; /* This would be your canvas or 3D render area */ display: flex; align-items: center; justify-content: center; }
-        .game-world-placeholder { color: #777; text-align: center; }
+        .game-world {
+            background-color: #2a2a2a; /* Darker background for contrast */
+            flex-grow: 1;
+            position: relative; /* Crucial for positioning the player */
+            overflow: hidden; /* Keep player inside */
+        }
 
-        .ui-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; /* Allows clicks to pass through to game world if needed, but specific UI elements below will have pointer-events: auto */ }
-        .ui-overlay > * { pointer-events: auto; /* Make sure UI elements are interactive */ }
+        #player {
+            position: absolute; /* Allows positioning with top/left */
+            width: 20px;
+            height: 20px;
+            background-color: #00ff00; /* Bright green player */
+            border-radius: 50%; /* Make it a circle */
+            left: 50%; /* Initial position */
+            top: 50%;  /* Initial position */
+            transform: translate(-50%, -50%); /* Center the player at initial pos */
+        }
 
-        .top-ui { display: flex; justify-content: space-between; padding: 10px; background-color: rgba(0,0,0,0.5); }
-        .status-bars div { margin-right: 15px; }
-        .zone-info { text-align: center; font-size: 1.1em; }
+        .ui-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .ui-overlay > * { pointer-events: auto; }
+
+        .top-ui { display: flex; justify-content: space-between; padding: 10px; background-color: rgba(0,0,0,0.5); font-size: 0.8em;}
+        .status-bars div { margin-right: 10px; }
+        .zone-info { text-align: center; font-size: 1em; }
         .alerts-area { text-align: right; }
         .police-scanner, .gang-messages { font-size: 0.9em; color: #ffc107; }
 
         .bottom-ui { display: flex; justify-content: space-between; align-items: flex-end; padding: 10px; background-color: rgba(0,0,0,0.5); }
-        .joystick-area { width: 100px; height: 100px; background-color: #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #777;}
-        .joystick-handle { width: 40px; height: 40px; background-color: #888; border-radius: 50%; }
-        .action-buttons button { padding: 10px 15px; margin-left: 10px; font-size: 1em; background-color: #666; color: white; border: 1px solid #888; border-radius: 5px; cursor: pointer; }
+        
+        .joystick-area {
+            width: 120px; /* Slightly larger for easier touch */
+            height: 120px;
+            background-color: rgba(85, 85, 85, 0.7); /* Semi-transparent */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #777;
+            position: relative; /* For joystick handle positioning */
+            user-select: none; /* Prevents text selection when dragging */
+            -webkit-user-select: none;
+        }
+        .joystick-handle {
+            width: 50px; /* Larger handle */
+            height: 50px;
+            background-color: #888;
+            border-radius: 50%;
+            position: absolute; /* Allows it to move within joystick-area */
+            border: 1px solid #aaa;
+        }
+
+        .action-buttons button { padding: 10px 12px; margin-left: 8px; font-size: 0.9em; background-color: #666; color: white; border: 1px solid #888; border-radius: 5px; cursor: pointer; }
         .action-buttons button:hover { background-color: #777; }
 
-        .right-ui { position: absolute; right: 10px; top: 30%; display: flex; flex-direction: column; gap: 10px; }
-        .inventory-button, .skills-button, .save-load-button { padding: 10px; background-color: rgba(0,0,0,0.7); border: 1px solid #555; cursor: pointer; }
+        .right-ui { position: absolute; right: 10px; top: 25%; display: flex; flex-direction: column; gap: 8px; }
+        .inventory-button, .skills-button, .save-load-button { padding: 8px; background-color: rgba(0,0,0,0.7); border: 1px solid #555; cursor: pointer; font-size: 0.8em; }
 
-        .event-log { position: absolute; bottom: 70px; /* Adjust based on bottom-ui height */ left: 10px; width: calc(100% - 20px); max-height: 100px; overflow-y: auto; background-color: rgba(0,0,0,0.6); padding: 5px; font-size: 0.8em; border: 1px solid #555; }
+        .event-log { position: absolute; bottom: 70px; left: 10px; width: calc(100% - 20px); max-height: 80px; overflow-y: auto; background-color: rgba(0,0,0,0.6); padding: 5px; font-size: 0.7em; border: 1px solid #555; }
         .event-log p { margin: 2px 0; }
 
-        /* Placeholder for dialogue, inventory modals etc. */
-        .modal { display: none; /* Hidden by default */ position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; color: #333; padding: 20px; border: 1px solid #ccc; z-index: 1000; min-width: 300px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-        .modal-content p { margin-bottom: 10px;}
+        .modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; color: #333; padding: 20px; border: 1px solid #ccc; z-index: 1000; min-width: 280px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
         .modal-close { position: absolute; top: 5px; right: 10px; cursor: pointer; font-weight: bold;}
 
-        /* Basic progress bar styling */
-        .progress-bar-container { width: 100px; background-color: #ddd; border-radius: 5px; margin-bottom: 5px; }
-        .progress-bar { width: 60%; /* Example */ height: 10px; background-color: #4CAF50; border-radius: 5px; text-align: center; line-height: 10px; color: white; font-size: 0.7em; }
-        .suspicion .progress-bar { background-color: #f44336; } /* Red for suspicion */
-        .trust-police .progress-bar { background-color: #2196F3; } /* Blue for police */
-        .trust-gang .progress-bar { background-color: #FF9800; } /* Orange for gang */
-
+        .progress-bar-container { width: 80px; background-color: #ddd; border-radius: 5px; margin-bottom: 3px; height: 8px; }
+        .progress-bar { width: 60%; height: 100%; background-color: #4CAF50; border-radius: 5px; }
+        .suspicion .progress-bar { background-color: #f44336; }
+        .trust-police .progress-bar { background-color: #2196F3; }
+        .trust-gang .progress-bar { background-color: #FF9800; }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="game-world">
-            <div class="game-world-placeholder">
-                <p>[3D Open World / Top-Down World View Here]</p>
-                <p>(This would typically be a &lt;canvas&gt; element)</p>
+            <div id="player"></div>
             </div>
-        </div>
 
         <div class="ui-overlay">
             <div class="top-ui">
                 <div class="status-bars">
-                    <div>
-                        Player Disguise: <span id="player-disguise">Civilian</span>
-                    </div>
-                    <div class="suspicion">
-                        Suspicion:
-                        <div class="progress-bar-container"><div class="progress-bar" id="suspicion-bar" style="width: 10%;"></div></div>
-                    </div>
-                    <div class="trust-police">
-                        Police Trust:
-                        <div class="progress-bar-container"><div class="progress-bar" id="police-trust-bar" style="width: 50%;"></div></div>
-                    </div>
-                    <div class="trust-gang">
-                        Gang Trust:
-                        <div class="progress-bar-container"><div class="progress-bar" id="gang-trust-bar" style="width: 20%;"></div></div>
-                    </div>
+                    <div>Player Disguise: <span id="player-disguise">Civilian</span></div>
+                    <div class="suspicion">Suspicion: <div class="progress-bar-container"><div class="progress-bar" id="suspicion-bar" style="width: 10%;"></div></div></div>
+                    <div class="trust-police">Police Trust: <div class="progress-bar-container"><div class="progress-bar" id="police-trust-bar" style="width: 50%;"></div></div></div>
+                    <div class="trust-gang">Gang Trust: <div class="progress-bar-container"><div class="progress-bar" id="gang-trust-bar" style="width: 20%;"></div></div></div>
                 </div>
-                <div class="zone-info" id="zone-info-display">
-                    Current Zone: Neutral Territory
-                </div>
+                <div class="zone-info" id="zone-info-display">Current Zone: Neutral Territory</div>
                 <div class="alerts-area">
                     <div class="police-scanner" id="police-scanner-display">No alerts</div>
                     <div class="gang-messages" id="gang-messages-display">No messages</div>
@@ -88,80 +103,185 @@
                 <button class="inventory-button" id="inventory-btn">Inventory</button>
                 <button class="skills-button" id="skills-btn">Skills</button>
                 <button class="save-load-button" id="save-load-btn">Save/Load</button>
-                <button id="toggle-radio-btn">Toggle Radio Audio</button>
+                <button id="toggle-radio-btn">Radio</button>
             </div>
 
-            <div class="event-log" id="event-log-area">
-                <p>Welcome to the city...</p>
-            </div>
+            <div class="event-log" id="event-log-area"><p>Welcome to the city...</p></div>
 
             <div class="bottom-ui">
-                <div class="joystick-area" id="joystick-container">
+                <div class="joystick-area" id="joystick-area">
                     <div class="joystick-handle" id="joystick-handle"></div>
-                    </div>
+                </div>
                 <div class="action-buttons">
                     <button id="talk-button">Talk</button>
-                    <button id="interact-button">Use / Interact</button>
+                    <button id="interact-button">Use</button>
                     <button id="punch-button">Punch</button>
-                    <button id="call-backup-button">Call Backup</button>
+                    <button id="call-backup-button">Backup</button>
                 </div>
             </div>
         </div>
 
-        <div id="dialogue-modal" class="modal">
-            <span class="modal-close" onclick="this.parentElement.style.display='none'">&times;</span>
-            <h3 id="dialogue-npc-name">NPC Name</h3>
-            <div id="dialogue-text">NPC dialogue appears here...</div>
-            <div id="dialogue-options">
-                <button>Option 1</button>
-                <button>Option 2</button>
-            </div>
-        </div>
-
-        <div id="inventory-modal" class="modal">
-            <span class="modal-close" onclick="this.parentElement.style.display='none'">&times;</span>
-            <h3>Inventory</h3>
-            <div id="inventory-items">
-                <p>Disguises: <span id="inventory-disguises">None</span></p>
-                <p>Evidence: <span id="inventory-evidence">None</span></p>
-                </div>
-        </div>
-
-        <div id="skills-modal" class="modal">
-            <span class="modal-close" onclick="this.parentElement.style.display='none'">&times;</span>
-            <h3>Skills</h3>
-            <p>Stealth: <span id="skill-stealth">Lvl 1</span></p>
-            <p>Strength: <span id="skill-strength">Lvl 1</span></p>
-            <p>Persuasion: <span id="skill-persuasion">Lvl 1</span></p>
-        </div>
-
+        <div id="dialogue-modal" class="modal"> ... </div>
+        <div id="inventory-modal" class="modal"> ... </div>
+        <div id="skills-modal" class="modal"> ... </div>
     </div>
 
     <script>
-        // Minimal JavaScript to make modals appear/disappear as an example
-        // In a real game, this would be much more complex and in a separate .js file.
         document.addEventListener('DOMContentLoaded', () => {
+            const player = document.getElementById('player');
+            const gameWorld = document.querySelector('.game-world');
+            const joystickArea = document.getElementById('joystick-area');
+            const joystickHandle = document.getElementById('joystick-handle');
+
+            let playerX = player.offsetLeft;
+            let playerY = player.offsetTop;
+            const playerSpeed = 2; // Pixels per frame
+
+            let joystickActive = false;
+            let joystickStartX = 0;
+            let joystickStartY = 0;
+            const joystickMaxDistance = joystickArea.offsetWidth / 2 - joystickHandle.offsetWidth / 2; // Max distance handle can move
+
+            // Center joystick handle initially
+            joystickHandle.style.left = (joystickArea.offsetWidth / 2 - joystickHandle.offsetWidth / 2) + 'px';
+            joystickHandle.style.top = (joystickArea.offsetHeight / 2 - joystickHandle.offsetHeight / 2) + 'px';
+
+
+            // Touch events for Joystick
+            joystickArea.addEventListener('touchstart', (e) => {
+                e.preventDefault(); // Prevent page scrolling
+                joystickActive = true;
+                const touch = e.touches[0];
+                const rect = joystickArea.getBoundingClientRect();
+                joystickStartX = touch.clientX - rect.left;
+                joystickStartY = touch.clientY - rect.top;
+            });
+
+            joystickArea.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (!joystickActive) return;
+
+                const touch = e.touches[0];
+                const rect = joystickArea.getBoundingClientRect();
+                let currentX = touch.clientX - rect.left;
+                let currentY = touch.clientY - rect.top;
+
+                let deltaX = currentX - (joystickArea.offsetWidth / 2);
+                let deltaY = currentY - (joystickArea.offsetHeight / 2);
+
+                // Normalize and limit distance
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                let moveXNormalized = deltaX / distance;
+                let moveYNormalized = deltaY / distance;
+
+                if (distance > joystickMaxDistance) {
+                    deltaX = moveXNormalized * joystickMaxDistance;
+                    deltaY = moveYNormalized * joystickMaxDistance;
+                }
+                
+                // Update handle position
+                joystickHandle.style.left = (joystickArea.offsetWidth / 2 - joystickHandle.offsetWidth / 2 + deltaX) + 'px';
+                joystickHandle.style.top = (joystickArea.offsetHeight / 2 - joystickHandle.offsetHeight / 2 + deltaY) + 'px';
+
+                // Update player position based on normalized joystick input
+                if (distance > 5) { // Add a small deadzone
+                     // Calculate normalized direction for player movement
+                    const playerMoveAngle = Math.atan2(deltaY, deltaX);
+                    playerX += Math.cos(playerMoveAngle) * playerSpeed;
+                    playerY += Math.sin(playerMoveAngle) * playerSpeed;
+                }
+            });
+
+            joystickArea.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                joystickActive = false;
+                // Reset handle to center
+                joystickHandle.style.left = (joystickArea.offsetWidth / 2 - joystickHandle.offsetWidth / 2) + 'px';
+                joystickHandle.style.top = (joystickArea.offsetHeight / 2 - joystickHandle.offsetHeight / 2) + 'px';
+            });
+            
+            // Mouse events for Joystick (for desktop testing)
+            joystickArea.addEventListener('mousedown', (e) => {
+                joystickActive = true;
+                const rect = joystickArea.getBoundingClientRect();
+                joystickStartX = e.clientX - rect.left;
+                joystickStartY = e.clientY - rect.top;
+            });
+
+            document.addEventListener('mousemove', (e) => { // Listen on document to drag outside joystick
+                if (!joystickActive) return;
+
+                const rect = joystickArea.getBoundingClientRect();
+                let currentX = e.clientX - rect.left;
+                let currentY = e.clientY - rect.top;
+                
+                let deltaX = currentX - (joystickArea.offsetWidth / 2);
+                let deltaY = currentY - (joystickArea.offsetHeight / 2);
+
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                let moveXNormalized = deltaX / distance;
+                let moveYNormalized = deltaY / distance;
+
+                if (distance > joystickMaxDistance) {
+                    deltaX = moveXNormalized * joystickMaxDistance;
+                    deltaY = moveYNormalized * joystickMaxDistance;
+                }
+                
+                joystickHandle.style.left = (joystickArea.offsetWidth / 2 - joystickHandle.offsetWidth / 2 + deltaX) + 'px';
+                joystickHandle.style.top = (joystickArea.offsetHeight / 2 - joystickHandle.offsetHeight / 2 + deltaY) + 'px';
+                
+                if (distance > 5) {
+                    const playerMoveAngle = Math.atan2(deltaY, deltaX);
+                    playerX += Math.cos(playerMoveAngle) * playerSpeed;
+                    playerY += Math.sin(playerMoveAngle) * playerSpeed;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (joystickActive) {
+                    joystickActive = false;
+                    joystickHandle.style.left = (joystickArea.offsetWidth / 2 - joystickHandle.offsetWidth / 2) + 'px';
+                    joystickHandle.style.top = (joystickArea.offsetHeight / 2 - joystickHandle.offsetHeight / 2) + 'px';
+                }
+            });
+
+
+            // Game Loop for updating player position
+            function gameLoop() {
+                // Boundary checks for player
+                const playerWidth = player.offsetWidth;
+                const playerHeight = player.offsetHeight;
+                const worldWidth = gameWorld.clientWidth;
+                const worldHeight = gameWorld.clientHeight;
+
+                if (playerX < 0) playerX = 0;
+                if (playerY < 0) playerY = 0;
+                if (playerX + playerWidth > worldWidth) playerX = worldWidth - playerWidth;
+                if (playerY + playerHeight > worldHeight) playerY = worldHeight - playerHeight;
+
+                player.style.left = playerX + 'px';
+                player.style.top = playerY + 'px';
+
+                requestAnimationFrame(gameLoop); // Call gameLoop again for next frame
+            }
+
+            // Start the game loop
+            gameLoop();
+
+            // --- Modal JS (simplified, keep for now) ---
             const inventoryBtn = document.getElementById('inventory-btn');
             const inventoryModal = document.getElementById('inventory-modal');
+            if (inventoryBtn && inventoryModal) {
+                inventoryBtn.addEventListener('click', () => { inventoryModal.style.display = 'block'; });
+                inventoryModal.querySelector('.modal-close').addEventListener('click', () => {inventoryModal.style.display='none'});
+            }
+            // Add for skills modal if it exists and has a close button
             const skillsBtn = document.getElementById('skills-btn');
             const skillsModal = document.getElementById('skills-modal');
-
-            // Example: Show inventory modal
-            if (inventoryBtn) {
-                inventoryBtn.addEventListener('click', () => {
-                    if (inventoryModal) inventoryModal.style.display = 'block';
-                });
+            if (skillsBtn && skillsModal) {
+                skillsBtn.addEventListener('click', () => { skillsModal.style.display = 'block'; });
+                 skillsModal.querySelector('.modal-close').addEventListener('click', () => {skillsModal.style.display='none'});
             }
-             // Example: Show skills modal
-            if (skillsBtn) {
-                skillsBtn.addEventListener('click', () => {
-                    if (skillsModal) skillsModal.style.display = 'block';
-                });
-            }
-
-            // Add similar logic for other modals and their close buttons.
-            // The inline 'onclick' for closing modals is simple but for a larger app,
-            // you'd use event listeners in JS.
         });
     </script>
 </body>
