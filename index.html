@@ -87,7 +87,6 @@
   </div>
   <div id="joystick"><div id="joystick-handle"></div></div>
   <button id="interact">Talk</button>  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>  <script>
-    // Scene
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x222222);
 
@@ -96,13 +95,11 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(5, 10, 7);
     scene.add(ambientLight, directionalLight);
 
-    // Ground
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(500, 500),
       new THREE.MeshStandardMaterial({ color: 0x333333 })
@@ -110,7 +107,6 @@
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    // Buildings
     for (let i = 0; i < 20; i++) {
       const building = new THREE.Mesh(
         new THREE.BoxGeometry(5, Math.random() * 10 + 5, 5),
@@ -120,7 +116,6 @@
       scene.add(building);
     }
 
-    // Player
     const player = new THREE.Mesh(
       new THREE.CapsuleGeometry(0.5, 1, 4, 8),
       new THREE.MeshStandardMaterial({ color: 0x00ffff })
@@ -128,7 +123,6 @@
     player.position.set(0, 1, 0);
     scene.add(player);
 
-    // NPC
     const npc = new THREE.Mesh(
       new THREE.CapsuleGeometry(0.5, 1, 4, 8),
       new THREE.MeshStandardMaterial({ color: 0xff4444 })
@@ -136,11 +130,35 @@
     npc.position.set(5, 1, 0);
     scene.add(npc);
 
-    // Camera positioning
+    // Custom police officer model (made from primitives)
+    const policeGroup = new THREE.Group();
+    const torso = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 1.2, 0.6),
+      new THREE.MeshStandardMaterial({ color: 0x0000cc })
+    );
+    torso.position.y = 1.6;
+    policeGroup.add(torso);
+
+    const head = new THREE.Mesh(
+      new THREE.SphereGeometry(0.3, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xffcc99 })
+    );
+    head.position.y = 2.3;
+    policeGroup.add(head);
+
+    const hat = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12),
+      new THREE.MeshStandardMaterial({ color: 0x000099 })
+    );
+    hat.position.y = 2.55;
+    policeGroup.add(hat);
+
+    policeGroup.position.set(-5, 0, 0);
+    scene.add(policeGroup);
+
     camera.position.set(0, 10, 10);
     camera.lookAt(player.position);
 
-    // Joystick controls
     const joystick = document.getElementById('joystick');
     const handle = document.getElementById('joystick-handle');
     let moveX = 0, moveZ = 0;
@@ -156,7 +174,7 @@
       const offsetY = Math.sin(angle) * dist;
       handle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
       moveX = -offsetX / 40;
-      moveZ = offsetY / 40;
+      moveZ = -offsetY / 40;
     });
 
     joystick.addEventListener('touchend', () => {
@@ -165,15 +183,13 @@
       moveZ = 0;
     });
 
-    // Interact button
     document.getElementById('interact').addEventListener('click', () => {
       if (player.position.distanceTo(npc.position) < 2) {
         document.getElementById('dialogue').style.display = 'block';
-        adjustTrust(-5, 10); // Example trust change
+        adjustTrust(-5, 10);
       }
     });
 
-    // Trust system
     let policeTrust = 50;
     let gangTrust = 50;
 
@@ -184,7 +200,6 @@
       document.getElementById('gangBar').style.width = gangTrust + '%';
     }
 
-    // Animate
     function animate() {
       requestAnimationFrame(animate);
 
@@ -200,7 +215,6 @@
 
     animate();
 
-    // Resize
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
