@@ -11,7 +11,7 @@
     #joystick {
       position: absolute;
       bottom: 40px;
-      right: 40px; /* 🎯 Joystick moved to bottom right */
+      right: 40px;
       width: 100px;
       height: 100px;
       background: rgba(255, 255, 255, 0.1);
@@ -33,7 +33,7 @@
     #interact {
       position: absolute;
       bottom: 40px;
-      left: 40px; /* 🔁 Interact button moved to bottom left */
+      left: 40px;
       background: #008cff;
       color: white;
       font-size: 18px;
@@ -104,7 +104,6 @@
     camera.position.set(0, 8, 10);
     camera.lookAt(player.position);
 
-    // Joystick logic
     const joystick = document.getElementById('joystick');
     const handle = document.getElementById('joystick-handle');
     let moveX = 0, moveZ = 0;
@@ -130,7 +129,7 @@
       const offsetY = Math.sin(angle) * dist;
 
       handle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-      moveX = offsetX / 40;
+      moveX = -offsetX / 40;  // ✅ X-direction fixed
       moveZ = offsetY / 40;
     }
 
@@ -140,7 +139,6 @@
       moveZ = 0;
     }
 
-    // Talk button
     document.getElementById('interact').addEventListener('click', () => {
       const dist = player.position.distanceTo(npc.position);
       if (dist < 2) {
