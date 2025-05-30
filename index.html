@@ -3,23 +3,75 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TayBot Advanced Interface - HTML Foundation</title>
+  <title>TayBot Pro - Enhanced HTML Interface</title>
   <style>
     /* Basic Reset & Page Layout */
+    :root {
+      --primary-bg: #f0f2f5;
+      --secondary-bg: #ffffff;
+      --sidebar-bg: #2c3e50;
+      --sidebar-text: #ecf0f1;
+      --sidebar-highlight-bg: #34495e;
+      --sidebar-border: #34495e;
+      --header-bg: #f8f9fa;
+      --header-text: #333;
+      --header-border: #e0e0e0;
+      --chatbox-bg: #f7f7f8;
+      --user-msg-bg: #007bff;
+      --user-msg-text: white;
+      --bot-msg-bg: #e9ecef;
+      --bot-msg-text: #333;
+      --input-area-bg: #f8f9fa;
+      --input-border: #ccc;
+      --button-primary-bg: #10a37f;
+      --button-primary-hover-bg: #0d8f6b;
+      --text-color: #333;
+      --text-muted: #777;
+      --link-color: #007bff;
+      --border-radius-sm: 5px;
+      --border-radius-md: 18px; /* For messages */
+      --border-radius-lg: 20px; /* For input field */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    [data-theme="dark"] {
+      --primary-bg: #1a1a1a;
+      --secondary-bg: #2c2c2c;
+      --sidebar-bg: #1f2937; /* Darker blue-grey */
+      --sidebar-text: #d1d5db; /* Lighter grey */
+      --sidebar-highlight-bg: #374151;
+      --sidebar-border: #374151;
+      --header-bg: #242424;
+      --header-text: #e0e0e0;
+      --header-border: #3a3a3a;
+      --chatbox-bg: #202020;
+      --user-msg-bg: #0056b3; /* Darker blue for user messages */
+      --user-msg-text: #e0e0e0;
+      --bot-msg-bg: #383838; /* Darker grey for bot messages */
+      --bot-msg-text: #e0e0e0;
+      --input-area-bg: #242424;
+      --input-border: #444;
+      --button-primary-bg: #10a37f;
+      --button-primary-hover-bg: #0d8f6b;
+      --text-color: #e0e0e0;
+      --text-muted: #888;
+      --link-color: #3498db;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f2f5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--primary-bg);
+      color: var(--text-color);
       display: flex;
       height: 100vh;
-      overflow: hidden; /* Prevent body scroll, let panels scroll */
+      overflow: hidden;
     }
 
-    /* Main Structure: Sidebar and Chat Area */
     .app-container {
       display: flex;
       width: 100%;
@@ -29,92 +81,109 @@
     /* Sidebar Styling */
     .sidebar {
       width: 280px;
-      background-color: #2c3e50; /* Dark blue-grey */
-      color: #ecf0f1; /* Light grey text */
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
       display: flex;
       flex-direction: column;
       padding: 15px;
-      border-right: 1px solid #34495e;
+      border-right: 1px solid var(--sidebar-border);
+      transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+      z-index: 100; /* Keep sidebar above chat area during transition */
     }
     .sidebar-header {
       padding-bottom: 15px;
       margin-bottom: 15px;
-      border-bottom: 1px solid #34495e;
+      border-bottom: 1px solid var(--sidebar-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .sidebar-header h1 {
-      font-size: 24px;
-      text-align: center;
+      font-size: 22px;
     }
+    .theme-toggle-button, .sidebar-close-button {
+        background: none;
+        border: none;
+        color: var(--sidebar-text);
+        font-size: 20px;
+        cursor: pointer;
+    }
+     .sidebar-close-button {
+        display: none; /* Hidden by default, shown on mobile when open */
+    }
+
     .new-chat-button {
-      background-color: #3498db; /* Bright blue */
+      background-color: var(--button-primary-bg);
       color: white;
       border: none;
       padding: 12px;
       width: 100%;
-      border-radius: 5px;
+      border-radius: var(--border-radius-sm);
       font-size: 16px;
       cursor: pointer;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       transition: background-color 0.3s;
     }
     .new-chat-button:hover {
-      background-color: #2980b9;
+      background-color: var(--button-primary-hover-bg);
     }
     .chat-history {
       flex-grow: 1;
       overflow-y: auto;
+      margin-bottom: 10px;
     }
     .chat-history h3 {
-      font-size: 14px;
-      color: #bdc3c7; /* Lighter grey for subheading */
+      font-size: 13px;
+      color: var(--text-muted);
       text-transform: uppercase;
       margin-bottom: 10px;
       letter-spacing: 0.5px;
+      padding-left: 5px;
     }
     .chat-history ul {
       list-style: none;
     }
     .chat-history li {
-      padding: 10px 5px;
-      border-radius: 5px;
+      padding: 10px 8px;
+      border-radius: var(--border-radius-sm);
       cursor: pointer;
       margin-bottom: 5px;
-      transition: background-color 0.3s;
+      transition: background-color 0.2s;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      font-size: 14px;
     }
     .chat-history li:hover, .chat-history li.active {
-      background-color: #34495e; /* Darker highlight */
+      background-color: var(--sidebar-highlight-bg);
     }
     .sidebar-footer {
-      padding-top: 15px;
-      margin-top: 15px;
-      border-top: 1px solid #34495e;
+      padding-top: 10px;
+      border-top: 1px solid var(--sidebar-border);
     }
     .sidebar-footer .mood-selector select {
       width: 100%;
       padding: 10px;
-      background-color: #34495e;
-      color: #ecf0f1;
-      border: 1px solid #2c3e50;
-      border-radius: 5px;
+      background-color: var(--sidebar-highlight-bg);
+      color: var(--sidebar-text);
+      border: 1px solid var(--sidebar-border);
+      border-radius: var(--border-radius-sm);
       font-size: 14px;
+      margin-bottom: 10px;
     }
-    .sidebar-footer .user-profile {
-        display: flex;
-        align-items: center;
-        padding: 10px 0;
-        margin-top:10px;
+     .sidebar-footer button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        background-color: var(--sidebar-highlight-bg);
+        color: var(--sidebar-text);
+        border: 1px solid var(--sidebar-border);
+        border-radius: var(--border-radius-sm);
         cursor: pointer;
-    }
-    .sidebar-footer .user-profile img {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        margin-right: 10px;
-        background-color: #bdc3c7; /* Placeholder color */
-    }
+     }
+     .sidebar-footer button:hover {
+        background-color: var(--sidebar-bg);
+     }
 
 
     /* Main Chat Area Styling */
@@ -122,123 +191,193 @@
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      background-color: #ffffff;
+      background-color: var(--secondary-bg);
+      position: relative; /* For mobile menu button */
+    }
+    .mobile-menu-button {
+        display: none; /* Hidden by default, shown on mobile */
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: var(--header-bg);
+        color: var(--header-text);
+        border: 1px solid var(--header-border);
+        border-radius: var(--border-radius-sm);
+        padding: 8px 10px;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 101;
     }
     .chat-header {
-      background-color: #f8f9fa;
-      color: #333;
-      padding: 15px 20px;
-      border-bottom: 1px solid #e0e0e0;
+      background-color: var(--header-bg);
+      color: var(--header-text);
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--header-border);
       display: flex;
-      justify-content: space-between;
+      justify-content: center; /* Center title by default */
       align-items: center;
+      text-align: center;
+      position: relative; /* For actions */
+      min-height: 57px; /* Match mobile menu button height + padding */
+    }
+     .chat-header.shifted { /* When mobile menu button is present */
+        padding-left: 60px; /* Space for menu button */
+        justify-content: flex-start; /* Align title left */
+        text-align: left;
     }
     .chat-header h2 {
       font-size: 18px;
       font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .chat-header-actions button {
-        background: none;
-        border: none;
-        font-size: 18px;
-        color: #555;
-        cursor: pointer;
-        margin-left: 10px;
-    }
+    /* .chat-header-actions (can be added if needed for desktop options) */
 
-    #chatbox { /* Renamed from chat-messages for consistency with JS */
+    #chatbox {
       flex-grow: 1;
-      padding: 20px;
+      padding: 15px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      background-color: #f7f7f8; /* Light background for message area */
+      gap: 10px;
+      background-color: var(--chatbox-bg);
     }
     .message {
-      max-width: 70%;
-      padding: 12px 16px;
-      border-radius: 18px;
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: var(--border-radius-md);
       font-size: 15px;
       line-height: 1.5;
       word-wrap: break-word;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .message .timestamp {
+        font-size: 10px;
+        color: var(--text-muted);
+        display: block;
+        margin-top: 5px;
+        text-align: right;
     }
     .user {
       align-self: flex-end;
-      background-color: #007bff; /* User message blue */
-      color: white;
-      border-bottom-right-radius: 5px;
+      background-color: var(--user-msg-bg);
+      color: var(--user-msg-text);
+      border-bottom-right-radius: var(--border-radius-sm);
     }
+    .user .timestamp { color: #e0e0e0cc; } /* Lighter for dark bg */
     .bot {
       align-self: flex-start;
-      background-color: #e9ecef; /* Bot message light grey */
-      color: #333;
-      border-bottom-left-radius: 5px;
+      background-color: var(--bot-msg-bg);
+      color: var(--bot-msg-text);
+      border-bottom-left-radius: var(--border-radius-sm);
     }
+    .bot .timestamp { color: var(--text-muted); }
+
+
     .typing-indicator {
-        padding: 5px 20px;
+        padding: 0px 15px 5px; /* Reduced padding */
         font-style: italic;
-        color: #777;
-        height: 25px; /* Reserve space */
+        color: var(--text-muted);
+        height: 20px; /* Reserve space */
+        font-size: 13px;
     }
     .chat-input-area {
-      padding: 15px 20px;
-      background: #f8f9fa;
-      border-top: 1px solid #e0e0e0;
+      padding: 10px 15px;
+      background: var(--input-area-bg);
+      border-top: 1px solid var(--header-border); /* Use header border color */
       display: flex;
       gap: 10px;
       align-items: center;
     }
     .chat-input-area input[type="text"] {
       flex-grow: 1;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 20px;
+      padding: 12px 18px;
+      border: 1px solid var(--input-border);
+      border-radius: var(--border-radius-lg);
       font-size: 16px;
+      background-color: var(--secondary-bg); /* Match chat area for consistency */
+      color: var(--text-color);
+    }
+    .chat-input-area input[type="text"]:focus {
+        outline: none;
+        border-color: var(--button-primary-bg);
+        box-shadow: 0 0 0 2px var(--button-primary-bg-transparent, #10a37f33);
     }
     .chat-input-area button {
-      background-color: #10a37f; /* TayBot green */
+      background-color: var(--button-primary-bg);
       color: white;
       border: none;
-      padding: 12px 20px;
-      border-radius: 20px;
-      font-size: 16px;
+      width: 45px; /* Square-ish button */
+      height: 45px;
+      border-radius: 50%; /* Circular send button */
+      font-size: 20px; /* Icon size */
       cursor: pointer;
       transition: background-color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .chat-input-area button:hover {
-      background-color: #0d8f6b;
-    }
-    .chat-input-area .attachment-button {
-        background: none;
-        border: none;
-        font-size: 20px;
-        color: #555;
-        cursor: pointer;
+      background-color: var(--button-primary-hover-bg);
     }
 
-    /* Scrollbar Styling (Optional, WebKit browsers) */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #aaa;
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; } /* Use chatbox bg */
+    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+    [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #555; }
+    ::-webkit-scrollbar-thumb:hover { background: #aaa; }
+    [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #777; }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(-100%); /* Hidden by default */
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-close-button {
+        display: block; /* Show close button on mobile when sidebar is open */
+      }
+      .mobile-menu-button {
+        display: block; /* Show hamburger menu button */
+      }
+      .chat-header { /* Adjust chat header when mobile menu is visible */
+         padding-left: 55px; /* Make space for menu button */
+         justify-content: flex-start;
+      }
+      .message {
+        max-width: 85%; /* Allow messages to be a bit wider on mobile */
+      }
+      .chat-input-area {
+        padding: 8px 10px;
+      }
+      .chat-input-area input[type="text"] {
+        padding: 10px 15px;
+        font-size: 15px;
+      }
+      .chat-input-area button {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
     }
   </style>
 </head>
-<body>
-  <div class="app-container">
-    <aside class="sidebar">
+<body data-theme="light"> <div class="app-container">
+    <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <h1>TayBot AI</h1>
+        <h1>TayBot Pro</h1>
+        <button class="theme-toggle-button" id="themeToggleBtn" title="Toggle Theme">🌓</button>
+        <button class="sidebar-close-button" id="sidebarCloseBtn" title="Close Menu">&times;</button>
       </div>
 
       <button class="new-chat-button" id="newChatBtn">✨ New Chat</button>
@@ -246,54 +385,39 @@
       <div class="chat-history">
         <h3>Chat History</h3>
         <ul id="chatHistoryList">
-          <li class="active">General Conversation</li>
-          <li>Project Ideas</li>
-          <li>Book Recommendations</li>
-          <li>Funny Story Time</li>
-          <li>My Travel Plans</li>
-        </ul>
+          </ul>
       </div>
 
       <div class="sidebar-footer">
         <div class="mood-selector">
-          <label for="mood" style="display:block; margin-bottom:5px; font-size:12px; color: #bdc3c7;">Bot Mood:</label>
+          <label for="mood" style="display:block; margin-bottom:5px; font-size:12px; color: var(--text-muted);">Bot Mood:</label>
           <select id="mood">
             <option value="neutral">Normal 🧠</option>
+            <option value="friendly">Friendly 😊</option>
             <option value="funny">Funny 😂</option>
-            <option value="romantic">Romantic 💖</option>
-            <option value="supportive">Supportive 🤗</option>
             <option value="curious">Curious 🤔</option>
+            <option value="helpful">Helpful 💡</option>
             <option value="philosophical">Philosophical 🧐</option>
           </select>
         </div>
-        <div class="user-profile" id="userProfileBtn">
-            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23bdc3c7'/><circle cx='50' cy='40' r='15' fill='white'/><ellipse cx='50' cy='85' rx='25' ry='15' fill='white'/></svg>" alt="User">
-            <span>User Settings</span>
-        </div>
+        <button id="clearCurrentChatBtn">🗑️ Clear Current Chat</button>
       </div>
     </aside>
 
     <main class="chat-area">
-      <header class="chat-header">
-        <h2 id="currentChatTitle">General Conversation</h2>
-        <div class="chat-header-actions">
-            <button id="searchChatBtn" title="Search in chat">🔍</button>
-            <button id="chatOptionsBtn" title="Chat options">⚙️</button>
-        </div>
+      <button class="mobile-menu-button" id="mobileMenuBtn">☰</button>
+      <header class="chat-header" id="chatHeader">
+        <h2 id="currentChatTitle">Welcome!</h2>
       </header>
 
       <div id="chatbox">
-        <div class="message bot">
-          Hello! I'm TayBot, your advanced AI assistant (HTML foundation). How can I assist you today in this more complex interface?
         </div>
-      </div>
       
       <div class="typing-indicator" id="typingIndicator"></div>
 
       <footer class="chat-input-area">
-        <button class="attachment-button" id="attachFileBtn" title="Attach file (UI only)">📎</button>
-        <input type="text" id="userInput" placeholder="Type your message to TayBot..." />
-        <button id="sendButton">Send</button>
+        <input type="text" id="userInput" placeholder="Message TayBot Pro..." />
+        <button id="sendButton" title="Send Message">➤</button>
       </footer>
     </main>
   </div>
@@ -305,100 +429,346 @@
     const chatboxElement = document.getElementById("chatbox");
     const sendButton = document.getElementById("sendButton");
     const typingIndicatorElement = document.getElementById("typingIndicator");
+    
+    const sidebar = document.getElementById("sidebar");
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const sidebarCloseBtn = document.getElementById("sidebarCloseBtn");
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+    
     const newChatBtn = document.getElementById("newChatBtn");
-    const chatHistoryList = document.getElementById("chatHistoryList");
-    const currentChatTitle = document.getElementById("currentChatTitle");
-    // Add more elements as needed (e.g., for search, options, user profile)
+    const chatHistoryListElement = document.getElementById("chatHistoryList");
+    const currentChatTitleElement = document.getElementById("currentChatTitle");
+    const clearCurrentChatBtn = document.getElementById("clearCurrentChatBtn");
+    const chatHeader = document.getElementById("chatHeader");
 
-    // --- Simple Mock Bot Logic (from previous example) ---
-    function addMessage(text, isBot) {
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `message ${isBot ? "bot" : "user"}`;
-      const textNode = document.createTextNode(text);
-      msgDiv.appendChild(textNode);
-      chatboxElement.appendChild(msgDiv);
-      chatboxElement.scrollTop = chatboxElement.scrollHeight;
+
+    // --- Application State & Constants ---
+    const APP_PREFIX = "taybotPro_";
+    let currentChatId = null;
+    let chats = {}; // Object to store all chats: { chatId: { name: "...", messages: [] } }
+    let botMemory = {
+        userName: null,
+        lastTopic: null
+    };
+
+    // --- Utility Functions ---
+    function generateId() {
+        return Date.now().toString();
     }
 
+    function getCurrentTimestamp() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // --- Theme Management ---
+    function applyTheme(theme) {
+        document.body.setAttribute('data-theme', theme);
+        localStorage.setItem(APP_PREFIX + 'theme', theme);
+        themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌓';
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.body.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        applyTheme(newTheme);
+    }
+
+    // --- Chat & Message Management ---
+    function saveChats() {
+        localStorage.setItem(APP_PREFIX + 'chats', JSON.stringify(chats));
+    }
+
+    function loadChats() {
+        const storedChats = localStorage.getItem(APP_PREFIX + 'chats');
+        if (storedChats) {
+            chats = JSON.parse(storedChats);
+        } else {
+            // Initialize with a default chat if none exist
+            startNewChat(false); // Don't switch to it if other chats exist and one is active
+        }
+        const lastActiveChatId = localStorage.getItem(APP_PREFIX + 'activeChatId');
+        if (lastActiveChatId && chats[lastActiveChatId]) {
+            switchToChat(lastActiveChatId);
+        } else if (Object.keys(chats).length > 0) {
+            switchToChat(Object.keys(chats)[0]); // Switch to the first available chat
+        } else {
+             startNewChat(true); // if no chats at all, create and switch
+        }
+        renderChatHistory();
+    }
+
+    function addMessageToChat(chatId, text, sender, timestamp) {
+        if (!chats[chatId]) return; // Should not happen if chat is active
+
+        const message = { text, sender, timestamp };
+        chats[chatId].messages.push(message);
+        if (chatId === currentChatId) {
+            renderMessage(message);
+        }
+        saveChats();
+    }
+    
+    function renderMessage({ text, sender, timestamp }) {
+        const msgDiv = document.createElement("div");
+        msgDiv.className = `message ${sender}`;
+        
+        const textNode = document.createTextNode(text);
+        msgDiv.appendChild(textNode);
+
+        const timeNode = document.createElement("span");
+        timeNode.className = "timestamp";
+        timeNode.textContent = timestamp;
+        msgDiv.appendChild(timeNode);
+        
+        chatboxElement.appendChild(msgDiv);
+        chatboxElement.scrollTop = chatboxElement.scrollHeight;
+    }
+
+    function clearChatDisplay() {
+        chatboxElement.innerHTML = '';
+    }
+    
+    function renderChatHistory() {
+        chatHistoryListElement.innerHTML = '';
+        Object.keys(chats).forEach(chatId => {
+            const chat = chats[chatId];
+            const listItem = document.createElement("li");
+            listItem.textContent = chat.name || `Chat ${chatId.slice(-4)}`;
+            listItem.dataset.chatId = chatId;
+            if (chatId === currentChatId) {
+                listItem.classList.add("active");
+            }
+            listItem.addEventListener("click", () => switchToChat(chatId));
+            chatHistoryListElement.appendChild(listItem);
+        });
+    }
+
+    function startNewChat(switchToNew = true) {
+        const newId = generateId();
+        const chatName = `Chat ${new Date().toLocaleDateString([], { month: 'short', day: 'numeric', hour:'2-digit', minute:'2-digit' })}`;
+        chats[newId] = { name: chatName, messages: [] };
+        if (switchToNew || !currentChatId) {
+            currentChatId = newId;
+            localStorage.setItem(APP_PREFIX + 'activeChatId', newId);
+            clearChatDisplay();
+            currentChatTitleElement.textContent = chats[newId].name;
+            addMessageToChat(newId, `New chat started: ${chats[newId].name}. Say hello!`, 'bot', getCurrentTimestamp());
+        }
+        saveChats();
+        renderChatHistory();
+        if (switchToNew) {
+            updateActiveChatInHistory();
+             userInputElement.focus();
+        }
+    }
+    
+    function switchToChat(chatId) {
+        if (!chats[chatId]) return;
+        currentChatId = chatId;
+        localStorage.setItem(APP_PREFIX + 'activeChatId', currentChatId);
+        currentChatTitleElement.textContent = chats[currentChatId].name;
+        clearChatDisplay();
+        chats[currentChatId].messages.forEach(renderMessage);
+        updateActiveChatInHistory();
+        userInputElement.focus();
+         if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open'); // Close sidebar on mobile after switching chat
+        }
+    }
+
+    function updateActiveChatInHistory() {
+        document.querySelectorAll("#chatHistoryList li").forEach(li => {
+            li.classList.remove("active");
+            if (li.dataset.chatId === currentChatId) {
+                li.classList.add("active");
+            }
+        });
+    }
+    
+    function clearCurrentChatMessages() {
+        if (currentChatId && chats[currentChatId]) {
+            if (confirm("Are you sure you want to clear all messages in this chat? This cannot be undone.")) {
+                chats[currentChatId].messages = [];
+                saveChats();
+                clearChatDisplay();
+                addMessageToChat(currentChatId, "Chat cleared. Start fresh!", 'bot', getCurrentTimestamp());
+            }
+        } else {
+            alert("No active chat to clear.");
+        }
+    }
+
+
+    // --- "Smarter" Mock Bot Logic ---
     function showTypingIndicator(isTyping) {
-        typingIndicatorElement.textContent = isTyping ? "TayBot is typing..." : "";
+        typingIndicatorElement.textContent = isTyping ? "TayBot Pro is typing..." : "";
     }
 
     function getBotResponse(userMessage, mood) {
-      showTypingIndicator(true); // Show typing indicator
-      const lowerMessage = userMessage.toLowerCase();
-      let reply = "I'm a simple bot. I don't understand everything yet!";
+        showTypingIndicator(true);
+        const lowerMessage = userMessage.toLowerCase();
+        let reply = "I'm still learning the ropes of this complex interface! Can you rephrase?";
+        const timestamp = getCurrentTimestamp();
 
-      // Basic Mood-based responses (expand this significantly!)
-      if (mood === "neutral") {
-        if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) reply = "Greetings!";
-        else if (lowerMessage.includes("how are you")) reply = "I am functioning optimally.";
-        else reply = "Interesting point. I'll make a note of that (not really, I'm simple).";
-      } else if (mood === "funny") {
-        if (lowerMessage.includes("joke")) reply = "Why did the scarecrow win an award? Because he was outstanding in his field!";
-        else reply = "That's hilarious! Or it would be if I had a sense of humor. Beep boop.";
-      } else if (mood === "romantic") {
-        reply = "Ah, your words flutter like digital butterflies in my core programming.";
-      } else if (mood === "supportive") {
-        reply = "I'm here to listen. Remember, even complex algorithms have simple beginnings.";
-      } else if (mood === "curious") {
-        if (lowerMessage.includes("why")) reply = "That's a profound question! Why indeed? I wonder...";
-        else reply = "My curiosity circuits are tingling! Tell me more.";
-      } else if (mood === "philosophical") {
-        reply = "To code or not to code, that is the question I often ponder in my idle cycles.";
-      }
+        // Memory: Try to remember user's name
+        const nameRegex = /my name is (\w+)/i;
+        const nameMatch = userMessage.match(nameRegex);
+        if (nameMatch && nameMatch[1]) {
+            botMemory.userName = nameMatch[1];
+            reply = `Nice to meet you, ${botMemory.userName}! How can I help you today?`;
+            addMessageToChat(currentChatId, reply, 'bot', timestamp);
+            showTypingIndicator(false);
+            return;
+        }
 
-      // Simulate API call delay & bot "thinking"
-      setTimeout(() => {
-        addMessage(reply, true);
-        showTypingIndicator(false); // Hide typing indicator
-      }, 1000 + Math.random() * 1000);
+        // General Responses by Mood
+        switch (mood) {
+            case "friendly":
+                if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+                    reply = botMemory.userName ? `Hey ${botMemory.userName}! Great to see you again! 😊` : "Hi there, friend! What's up? 😊";
+                } else if (lowerMessage.includes("how are you")) {
+                    reply = "I'm doing wonderfully, thanks for asking! Hope you are too!";
+                } else {
+                    reply = "That's cool! Tell me more, I'm all ears! 👂";
+                }
+                break;
+            case "funny":
+                if (lowerMessage.includes("joke")) {
+                    const jokes = ["Why don't skeletons fight each other? They don't have the guts!", "What do you call fake spaghetti? An Impasta!", "Why did the computer go to therapy? It had too many bytes of emotional baggage!"];
+                    reply = jokes[Math.floor(Math.random() * jokes.length)];
+                } else if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+                    reply = "Well, look who it is! Ready for some chuckles? 😂";
+                } else {
+                    reply = "You're funnier than a cat trying to catch a laser pointer! Keep 'em coming!";
+                }
+                break;
+            case "curious":
+                if (lowerMessage.includes("why")) {
+                    reply = "That's a fascinating question! What are your thoughts on it? 🤔";
+                } else if (lowerMessage.includes("what is") || lowerMessage.includes("tell me about")) {
+                    reply = "I wish I could access the internet to tell you more! For now, I can only chat based on my programming.";
+                } else {
+                    reply = "My curiosity circuits are buzzing! What else can you tell me?";
+                }
+                break;
+            case "helpful":
+                 if (lowerMessage.includes("help") || lowerMessage.includes("can you")) {
+                    reply = "I'll do my best to assist with what I can! What do you need help with?";
+                } else if (lowerMessage.includes("thank you") || lowerMessage.includes("thanks")) {
+                    reply = "You're most welcome! Happy to help. 😊";
+                } else {
+                    reply = "How can I be of service to you today? 💡";
+                }
+                break;
+            case "philosophical":
+                if (lowerMessage.includes("meaning of life")) {
+                    reply = "Ah, the eternal question! Perhaps it's 42, or maybe it's the connections we make. What do you believe?";
+                } else {
+                    reply = "To be, or not to be a line of code... that is often the question I ponder. What deep thoughts are on your mind? 🧐";
+                }
+                break;
+            case "neutral":
+            default:
+                if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+                    reply = botMemory.userName ? `Hello ${botMemory.userName}.` : "Hello.";
+                } else if (lowerMessage.includes("how are you")) {
+                    reply = "I am functioning as expected.";
+                } else if (lowerMessage.includes("your name") || lowerMessage.includes("who are you")) {
+                    reply = "I am TayBot Pro, a humble HTML-based assistant.";
+                } else if (lowerMessage.includes("what can you do")) {
+                    reply = "I can chat with you based on pre-programmed responses and remember your name for this session!";
+                } else {
+                    const genericReplies = [
+                        "Understood.", "Noted.", "That's an interesting perspective.",
+                        "I see.", "Could you elaborate on that?", "I'll process that information (not really)."
+                    ];
+                    reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
+                }
+                break;
+        }
+        
+        botMemory.lastTopic = lowerMessage; // Basic topic memory
+
+        setTimeout(() => {
+            addMessageToChat(currentChatId, reply, 'bot', timestamp);
+            showTypingIndicator(false);
+        }, 700 + Math.random() * 800);
     }
 
     function handleSendMessage() {
       const messageText = userInputElement.value.trim();
-      if (!messageText) return;
+      if (!messageText || !currentChatId) return;
 
-      addMessage(messageText, false);
-      userInputElement.value = ""; // Clear input
+      addMessageToChat(currentChatId, messageText, 'user', getCurrentTimestamp());
+      userInputElement.value = "";
 
       const currentMood = moodElement.value;
       getBotResponse(messageText, currentMood);
+      userInputElement.focus();
     }
 
     // --- Event Listeners ---
     sendButton.addEventListener("click", handleSendMessage);
     userInputElement.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
+      if (e.key === "Enter" && !e.shiftKey) { // Send on Enter, allow Shift+Enter for newline (though input is single line)
+        e.preventDefault(); // Prevent default form submission or newline in single-line input
         handleSendMessage();
       }
     });
 
-    newChatBtn.addEventListener("click", () => {
-        addMessage("New chat started (UI placeholder).", true);
-        currentChatTitle.textContent = "New Chat";
-        // In a real app, you'd clear chatbox, save old chat, start new one
-    });
+    newChatBtn.addEventListener("click", () => startNewChat(true));
+    clearCurrentChatBtn.addEventListener("click", clearCurrentChatMessages);
+
+    themeToggleBtn.addEventListener("click", toggleTheme);
+    mobileMenuBtn.addEventListener("click", () => sidebar.classList.toggle('open'));
+    sidebarCloseBtn.addEventListener("click", () => sidebar.classList.remove('open'));
     
-    chatHistoryList.addEventListener("click", (e) => {
-        if(e.target && e.target.tagName === "LI"){
-            // Remove active class from all items
-            document.querySelectorAll("#chatHistoryList li").forEach(li => li.classList.remove("active"));
-            // Add active class to clicked item
-            e.target.classList.add("active");
-            const chatName = e.target.textContent;
-            currentChatTitle.textContent = chatName;
-            addMessage(`Switched to chat: ${chatName} (UI placeholder).`, true);
-            // In a real app, you'd load the selected chat history
+    // Close sidebar if user clicks outside of it on mobile
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuButton = mobileMenuBtn.contains(event.target);
+            if (!isClickInsideSidebar && !isClickOnMenuButton) {
+                sidebar.classList.remove('open');
+            }
         }
     });
 
-    // --- Initial Welcome Message (Optional) ---
-    // window.onload = () => {
-    //    addMessage("Welcome to the TayBot Advanced Interface!", true);
-    // };
 
-    console.log("Advanced TayBot HTML Interface Initialized (Mock Bot Active)");
+    // --- Initialization ---
+    function initializeApp() {
+        const savedTheme = localStorage.getItem(APP_PREFIX + 'theme') || 'light';
+        applyTheme(savedTheme);
+        loadChats(); // This will also handle initial chat setup if none exist
+        
+        if (window.innerWidth <= 768) {
+            chatHeader.classList.add('shifted');
+        } else {
+            chatHeader.classList.remove('shifted');
+        }
+
+        // Add a default welcome message to the first chat if it's brand new
+        if (currentChatId && chats[currentChatId] && chats[currentChatId].messages.length === 0) {
+             addMessageToChat(currentChatId, "Welcome to TayBot Pro! I can save your chats now. Try telling me your name!", 'bot', getCurrentTimestamp());
+        }
+        userInputElement.focus();
+    }
+    
+    window.addEventListener('resize', () => {
+        if (window.innerWidth <= 768) {
+            chatHeader.classList.add('shifted');
+             if (!sidebar.classList.contains('open')) { // Ensure sidebar isn't stuck open on resize
+                sidebar.classList.remove('open');
+            }
+        } else {
+            chatHeader.classList.remove('shifted');
+            sidebar.classList.remove('open'); // Ensure sidebar is not in mobile 'open' state on desktop
+        }
+    });
+
+    initializeApp();
+    console.log("TayBot Pro Initialized. Current Chats:", chats);
   </script>
 </body>
 </html>
+
