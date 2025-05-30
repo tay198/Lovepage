@@ -116,12 +116,80 @@
       scene.add(building);
     }
 
-    const player = new THREE.Mesh(
-      new THREE.CapsuleGeometry(0.5, 1, 4, 8),
-      new THREE.MeshStandardMaterial({ color: 0x00ffff })
-    );
-    player.position.set(0, 1, 0);
-    scene.add(player);
+    // Custom built police officer from primitives
+const player = new THREE.Group(); // custom police model group that will move with joystick
+
+// Torso
+const torso = new THREE.Mesh(
+  new THREE.BoxGeometry(1, 1.2, 0.6),
+  new THREE.MeshStandardMaterial({ color: 0x1a237e })
+);
+torso.position.y = 1.6;
+player.add(torso);
+
+// Head
+const head = new THREE.Mesh(
+  new THREE.SphereGeometry(0.3, 16, 16),
+  new THREE.MeshStandardMaterial({ color: 0xffcc99 })
+);
+head.position.y = 2.3;
+player.add(head);
+
+// Hat
+const hatBase = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.32, 0.32, 0.2, 12),
+  new THREE.MeshStandardMaterial({ color: 0x0d47a1 })
+);
+hatBase.position.y = 2.55;
+player.add(hatBase);
+
+const hatBrim = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.4, 0.4, 0.05, 12),
+  new THREE.MeshStandardMaterial({ color: 0x0d47a1 })
+);
+hatBrim.position.y = 2.5;
+player.add(hatBrim);
+
+// Arms
+const leftArm = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.15, 0.15, 1, 12),
+  new THREE.MeshStandardMaterial({ color: 0x1a237e })
+);
+leftArm.position.set(-0.65, 1.6, 0);
+leftArm.rotation.z = Math.PI / 2;
+player.add(leftArm);
+
+const rightArm = leftArm.clone();
+rightArm.position.x = 0.65;
+player.add(rightArm);
+
+// Legs
+const leftLeg = new THREE.Mesh(
+  new THREE.CylinderGeometry(0.2, 0.2, 1.2, 12),
+  new THREE.MeshStandardMaterial({ color: 0x0d47a1 })
+);
+leftLeg.position.set(-0.3, 0.6, 0);
+player.add(leftLeg);
+
+const rightLeg = leftLeg.clone();
+rightLeg.position.x = 0.3;
+player.add(rightLeg);
+
+// Belt gear
+const radio = new THREE.Mesh(
+  new THREE.BoxGeometry(0.2, 0.3, 0.1),
+  new THREE.MeshStandardMaterial({ color: 0x000000 })
+);
+radio.position.set(0.4, 1.1, 0.35);
+player.add(radio);
+
+const cuffs = radio.clone();
+cuffs.position.x = -0.4;
+player.add(cuffs);
+
+// make this the player controlled model
+player.position.set(0, 0, 0);
+scene.add(player);
 
     const npc = new THREE.Mesh(
       new THREE.CapsuleGeometry(0.5, 1, 4, 8),
