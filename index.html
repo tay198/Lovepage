@@ -2,16 +2,54 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Undercover Shift 3D</title>
+  <title>Undercover Shift 3D - Mobile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body { margin: 0; overflow: hidden; }
     canvas { display: block; }
+
+    #joystick {
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      touch-action: none;
+    }
+
+    #joystick-handle {
+      width: 50px;
+      height: 50px;
+      background: #00ffff;
+      border-radius: 50%;
+      position: relative;
+      left: 25px;
+      top: 25px;
+      touch-action: none;
+    }
+
+    #interact {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      background: #008cff;
+      color: white;
+      font-size: 18px;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 12px;
+      font-family: monospace;
+      touch-action: manipulation;
+    }
+
     #dialogue {
       position: absolute;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       color: white;
       padding: 10px 20px;
       border-radius: 10px;
@@ -22,31 +60,34 @@
 </head>
 <body>
   <div id="dialogue">Razor: You lost, cop?</div>
+  <div id="joystick"><div id="joystick-handle"></div></div>
+  <button id="interact">Talk</button>
+
   <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
   <script>
     // Scene setup
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111111);
 
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    // Light
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 2, 3);
-    scene.add(light);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
 
-    // Ground
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    directionalLight.position.set(3, 10, 5);
+    scene.add(directionalLight);
+
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(100, 100),
-      new THREE.MeshStandardMaterial({ color: 0x222222 })
+      new THREE.MeshStandardMaterial({ color: 0x333333 })
     );
     ground.rotation.x = -Math.PI / 2;
     scene.add(ground);
 
-    // Player
     const player = new THREE.Mesh(
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshStandardMaterial({ color: 0x00ffff })
@@ -54,7 +95,6 @@
     player.position.y = 0.5;
     scene.add(player);
 
-    // NPC (gang member)
     const npc = new THREE.Mesh(
       new THREE.BoxGeometry(1, 1, 1),
       new THREE.MeshStandardMaterial({ color: 0xff0000 })
@@ -62,46 +102,75 @@
     npc.position.set(5, 0.5, 0);
     scene.add(npc);
 
-    // Camera
-    camera.position.set(0, 5, 10);
+    camera.position.set(0, 8, 10);
     camera.lookAt(player.position);
 
-    // Controls
-    const keys = {};
-    document.addEventListener('keydown', (e) => {
-      keys[e.key.toLowerCase()] = true;
+    // Joystick logic
+    const joystick = document.getElementById('joystick');
+    const handle = document.getElementById('joystick-handle');
+    let moveX = 0, moveZ = 0;
 
-      // Interaction
-      if (e.key === 'e' || e.key === 'E') {
-        const dist = player.position.distanceTo(npc.position);
-        if (dist < 2) {
-          document.getElementById('dialogue').style.display = 'block';
-        }
+    joystick.addEventListener('touchstart', startDrag);
+    joystick.addEventListener('touchmove', drag);
+    joystick.addEventListener('touchend', endDrag);
+
+    function startDrag(e) {
+      e.preventDefault();
+    }
+
+    function drag(e) {
+      const touch = e.touches[0];
+      const rect = joystick.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dx = touch.clientX - centerX;
+      const dy = touch.clientY - centerY;
+      const dist = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
+      const angle = Math.atan2(dy, dx);
+      const offsetX = Math.cos(angle) * dist;
+      const offsetY = Math.sin(angle) * dist;
+
+      handle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      moveX = offsetX / 40;
+      moveZ = offsetY / 40;
+    }
+
+    function endDrag() {
+      handle.style.transform = `translate(0px, 0px)`;
+      moveX = 0;
+      moveZ = 0;
+    }
+
+    // Talk button
+    document.getElementById('interact').addEventListener('click', () => {
+      const dist = player.position.distanceTo(npc.position);
+      if (dist < 2) {
+        document.getElementById('dialogue').style.display = 'block';
       }
-    });
-    document.addEventListener('keyup', (e) => {
-      keys[e.key.toLowerCase()] = false;
     });
 
     function animate() {
       requestAnimationFrame(animate);
 
-      // Movement
       const speed = 0.1;
-      if (keys['w']) player.position.z -= speed;
-      if (keys['s']) player.position.z += speed;
-      if (keys['a']) player.position.x -= speed;
-      if (keys['d']) player.position.x += speed;
+      player.position.x += moveX * speed;
+      player.position.z += moveZ * speed;
 
-      // Follow player
       camera.position.x = player.position.x;
-      camera.position.z = player.position.z + 10;
+      camera.position.z = player.position.z + 8;
       camera.lookAt(player.position);
 
       renderer.render(scene, camera);
     }
 
     animate();
+
+    // Make canvas resize with screen
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
   </script>
 </body>
 </html>
