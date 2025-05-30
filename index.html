@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TayBot Pro - Enhanced & Mobile Optimized</title>
+  <title>TayBot Pro - Massively Expanded Logic</title>
   <style>
-    /* Basic Reset & Page Layout */
+    /* Basic Reset & Page Layout (CSS remains the same as the "Enhanced & Mobile Optimized" version) */
     :root {
       --primary-bg: #f0f2f5;
       --secondary-bg: #ffffff;
@@ -58,378 +58,106 @@
       --link-color: #3498db;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--primary-bg);
-      color: var(--text-color);
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .app-container {
-      display: flex;
-      width: 100%;
-      height: 100%;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--primary-bg); color: var(--text-color); display: flex; height: 100vh; overflow: hidden; }
+    .app-container { display: flex; width: 100%; height: 100%; }
 
     /* Sidebar Styling */
-    .sidebar {
-      width: 280px;
-      background-color: var(--sidebar-bg);
-      color: var(--sidebar-text);
-      display: flex;
-      flex-direction: column;
-      padding: 15px;
-      border-right: 1px solid var(--sidebar-border);
-      transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
-      z-index: 100;
-    }
-    .sidebar-header {
-      padding-bottom: 15px;
-      margin-bottom: 15px;
-      border-bottom: 1px solid var(--sidebar-border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .sidebar-header h1 {
-      font-size: 22px;
-    }
-    .theme-toggle-button, .sidebar-close-button {
-        background: none;
-        border: none;
-        color: var(--sidebar-text);
-        font-size: 20px;
-        cursor: pointer;
-    }
-     .sidebar-close-button {
-        display: none; 
-    }
-
-    .new-chat-button {
-      background-color: var(--button-primary-bg);
-      color: white;
-      border: none;
-      padding: 12px;
-      width: 100%;
-      border-radius: var(--border-radius-sm);
-      font-size: 16px;
-      cursor: pointer;
-      margin-bottom: 15px;
-      transition: background-color 0.3s;
-    }
-    .new-chat-button:hover {
-      background-color: var(--button-primary-hover-bg);
-    }
-    .chat-history {
-      flex-grow: 1;
-      overflow-y: auto;
-      margin-bottom: 10px;
-    }
-    .chat-history h3 {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      letter-spacing: 0.5px;
-      padding-left: 5px;
-    }
-    .chat-history ul {
-      list-style: none;
-    }
-    .chat-history li {
-      padding: 10px 8px;
-      border-radius: var(--border-radius-sm);
-      cursor: pointer;
-      margin-bottom: 5px;
-      transition: background-color 0.2s;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 14px;
-    }
-    .chat-history li:hover, .chat-history li.active {
-      background-color: var(--sidebar-highlight-bg);
-    }
-    .sidebar-footer {
-      padding-top: 10px;
-      border-top: 1px solid var(--sidebar-border);
-    }
-    .sidebar-footer .mood-selector select {
-      width: 100%;
-      padding: 10px;
-      background-color: var(--sidebar-highlight-bg);
-      color: var(--sidebar-text);
-      border: 1px solid var(--sidebar-border);
-      border-radius: var(--border-radius-sm);
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-     .sidebar-footer button {
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-        background-color: var(--sidebar-highlight-bg);
-        color: var(--sidebar-text);
-        border: 1px solid var(--sidebar-border);
-        border-radius: var(--border-radius-sm);
-        cursor: pointer;
-     }
-     .sidebar-footer button:hover {
-        background-color: var(--sidebar-bg);
-     }
+    .sidebar { width: 280px; background-color: var(--sidebar-bg); color: var(--sidebar-text); display: flex; flex-direction: column; padding: 15px; border-right: 1px solid var(--sidebar-border); transition: transform 0.3s ease-in-out, width 0.3s ease-in-out; z-index: 100; }
+    .sidebar-header { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid var(--sidebar-border); display: flex; justify-content: space-between; align-items: center; }
+    .sidebar-header h1 { font-size: 22px; }
+    .theme-toggle-button, .sidebar-close-button { background: none; border: none; color: var(--sidebar-text); font-size: 20px; cursor: pointer; }
+    .sidebar-close-button { display: none; }
+    .new-chat-button { background-color: var(--button-primary-bg); color: white; border: none; padding: 12px; width: 100%; border-radius: var(--border-radius-sm); font-size: 16px; cursor: pointer; margin-bottom: 15px; transition: background-color 0.3s; }
+    .new-chat-button:hover { background-color: var(--button-primary-hover-bg); }
+    .chat-history { flex-grow: 1; overflow-y: auto; margin-bottom: 10px; }
+    .chat-history h3 { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px; padding-left: 5px; }
+    .chat-history ul { list-style: none; }
+    .chat-history li { padding: 10px 8px; border-radius: var(--border-radius-sm); cursor: pointer; margin-bottom: 5px; transition: background-color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; }
+    .chat-history li:hover, .chat-history li.active { background-color: var(--sidebar-highlight-bg); }
+    .sidebar-footer { padding-top: 10px; border-top: 1px solid var(--sidebar-border); }
+    .sidebar-footer .mood-selector select { width: 100%; padding: 10px; background-color: var(--sidebar-highlight-bg); color: var(--sidebar-text); border: 1px solid var(--sidebar-border); border-radius: var(--border-radius-sm); font-size: 14px; margin-bottom: 10px; }
+    .sidebar-footer button { width: 100%; padding: 10px; font-size: 14px; background-color: var(--sidebar-highlight-bg); color: var(--sidebar-text); border: 1px solid var(--sidebar-border); border-radius: var(--border-radius-sm); cursor: pointer; }
+    .sidebar-footer button:hover { background-color: var(--sidebar-bg); }
 
     /* Main Chat Area Styling */
-    .chat-area {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      background-color: var(--secondary-bg);
-      position: relative; 
-    }
-    .mobile-menu-button {
-        display: none; 
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background: var(--header-bg);
-        color: var(--header-text);
-        border: 1px solid var(--header-border);
-        border-radius: var(--border-radius-sm);
-        padding: 8px 10px;
-        font-size: 20px;
-        cursor: pointer;
-        z-index: 101;
-    }
-    .chat-header {
-      background-color: var(--header-bg);
-      color: var(--header-text);
-      padding: 12px 20px;
-      border-bottom: 1px solid var(--header-border);
-      display: flex;
-      justify-content: center; 
-      align-items: center;
-      text-align: center;
-      position: relative; 
-      min-height: 57px; 
-    }
-     .chat-header.shifted { 
-        padding-left: 60px; 
-        justify-content: flex-start; 
-        text-align: left;
-    }
-    .chat-header h2 {
-      font-size: 18px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    #chatbox {
-      flex-grow: 1;
-      padding: 15px; /* Default padding */
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background-color: var(--chatbox-bg);
-    }
-    .message {
-      max-width: 75%; /* Default max-width */
-      padding: 10px 14px; /* Default padding */
-      border-radius: var(--border-radius-md);
-      font-size: 15px; /* Default font-size */
-      line-height: 1.5;
-      word-wrap: break-word;
-      box-shadow: var(--shadow-sm);
-      position: relative;
-    }
-    .message .timestamp {
-        font-size: 10px; /* Default timestamp size */
-        color: var(--text-muted);
-        display: block;
-        margin-top: 5px; /* Default margin */
-        text-align: right;
-    }
-    .user {
-      align-self: flex-end;
-      background-color: var(--user-msg-bg);
-      color: var(--user-msg-text);
-      border-bottom-right-radius: var(--border-radius-sm);
-    }
+    .chat-area { flex-grow: 1; display: flex; flex-direction: column; background-color: var(--secondary-bg); position: relative; }
+    .mobile-menu-button { display: none; position: absolute; top: 10px; left: 10px; background: var(--header-bg); color: var(--header-text); border: 1px solid var(--header-border); border-radius: var(--border-radius-sm); padding: 8px 10px; font-size: 20px; cursor: pointer; z-index: 101; }
+    .chat-header { background-color: var(--header-bg); color: var(--header-text); padding: 12px 20px; border-bottom: 1px solid var(--header-border); display: flex; justify-content: center; align-items: center; text-align: center; position: relative; min-height: 57px; }
+    .chat-header.shifted { padding-left: 60px; justify-content: flex-start; text-align: left; }
+    .chat-header h2 { font-size: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #chatbox { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: var(--chatbox-bg); }
+    .message { max-width: 75%; padding: 10px 14px; border-radius: var(--border-radius-md); font-size: 15px; line-height: 1.5; word-wrap: break-word; box-shadow: var(--shadow-sm); position: relative; }
+    .message .timestamp { font-size: 10px; color: var(--text-muted); display: block; margin-top: 5px; text-align: right; }
+    .user { align-self: flex-end; background-color: var(--user-msg-bg); color: var(--user-msg-text); border-bottom-right-radius: var(--border-radius-sm); }
     .user .timestamp { color: #e0e0e0cc; } 
-    .bot {
-      align-self: flex-start;
-      background-color: var(--bot-msg-bg);
-      color: var(--bot-msg-text);
-      border-bottom-left-radius: var(--border-radius-sm);
-    }
+    .bot { align-self: flex-start; background-color: var(--bot-msg-bg); color: var(--bot-msg-text); border-bottom-left-radius: var(--border-radius-sm); }
     .bot .timestamp { color: var(--text-muted); }
-
-    .typing-indicator {
-        padding: 0px 15px 5px; 
-        font-style: italic;
-        color: var(--text-muted);
-        height: 20px; 
-        font-size: 13px;
-    }
-    .chat-input-area {
-      padding: 10px 15px; /* Default padding */
-      background: var(--input-area-bg);
-      border-top: 1px solid var(--header-border); 
-      display: flex;
-      gap: 10px; /* Default gap */
-      align-items: center;
-    }
-    .chat-input-area input[type="text"] {
-      flex-grow: 1;
-      padding: 12px 18px; /* Default padding */
-      border: 1px solid var(--input-border);
-      border-radius: var(--border-radius-lg);
-      font-size: 16px; /* Default font-size */
-      background-color: var(--secondary-bg); 
-      color: var(--text-color);
-    }
-    .chat-input-area input[type="text"]:focus {
-        outline: none;
-        border-color: var(--button-primary-bg);
-        box-shadow: 0 0 0 2px var(--button-primary-bg-transparent, #10a37f33);
-    }
-    .chat-input-area button {
-      background-color: var(--button-primary-bg);
-      color: white;
-      border: none;
-      width: 45px; /* Default width */
-      height: 45px; /* Default height */
-      border-radius: 50%; 
-      font-size: 20px; /* Default icon size */
-      cursor: pointer;
-      transition: background-color 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0; /* Added from fix */
-    }
-    .chat-input-area button:hover {
-      background-color: var(--button-primary-hover-bg);
-    }
+    .typing-indicator { padding: 0px 15px 5px; font-style: italic; color: var(--text-muted); height: 20px; font-size: 13px; }
+    .chat-input-area { padding: 10px 15px; background: var(--input-area-bg); border-top: 1px solid var(--header-border); display: flex; gap: 10px; align-items: center; }
+    .chat-input-area input[type="text"] { flex-grow: 1; padding: 12px 18px; border: 1px solid var(--input-border); border-radius: var(--border-radius-lg); font-size: 16px; background-color: var(--secondary-bg); color: var(--text-color); }
+    .chat-input-area input[type="text"]:focus { outline: none; border-color: var(--button-primary-bg); box-shadow: 0 0 0 2px var(--button-primary-bg-transparent, #10a37f33); }
+    .chat-input-area button { background-color: var(--button-primary-bg); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: background-color 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chat-input-area button:hover { background-color: var(--button-primary-hover-bg); }
 
     /* Scrollbar Styling */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; } 
-    ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
-    [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #555; }
-    ::-webkit-scrollbar-thumb:hover { background: #aaa; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+    [data-theme="dark"] ::-webkit-scrollbar-thumb { background: #555; } ::-webkit-scrollbar-thumb:hover { background: #aaa; }
     [data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #777; }
 
     /* Mobile Responsiveness - WITH FIXES APPLIED */
     @media (max-width: 768px) {
-      .sidebar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        transform: translateX(-100%); 
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        /* width: 280px; Maintain width when open or adjust as needed */
-      }
-      .sidebar.open {
-        transform: translateX(0);
-      }
-      .sidebar-close-button {
-        display: block; 
-      }
-      .mobile-menu-button {
-        display: block; 
-      }
-      .chat-header { 
-         padding-left: 55px; /* Make space for menu button */
-         justify-content: flex-start;
-      }
-
-      /* CHATBOX and MESSAGES on MOBILE - Updated */
-      #chatbox {
-        padding: 10px 12px; /* Slightly reduced padding for more message space */
-      }
-      .message {
-        max-width: 85%;    /* Allow messages to be a bit wider */
-        font-size: 14px;   /* Slightly smaller message font */
-        padding: 8px 12px; /* Slightly smaller message bubble padding */
-      }
-      .message .timestamp {
-        font-size: 9px;    /* Smaller timestamp text */
-        margin-top: 4px;   /* Adjust spacing if needed */
-      }
-
-      /* INPUT AREA on MOBILE - Updated with fixes */
-      .chat-input-area {
-        padding: 8px 10px;  /* Reduced padding for the entire input bar */
-        gap: 8px;           /* Slightly reduced gap between input and button */
-        align-items: center;/* Vertically align items */
-      }
-      .chat-input-area input[type="text"] {
-        padding: 10px 15px; /* Optimized padding for the text input field */
-        font-size: 15px;    /* Good font size for mobile readability */
-      }
-      .chat-input-area button { /* Send button */
-        width: 40px;        /* Optimized size for tapping */
-        height: 40px;       /* Optimized size for tapping */
-        font-size: 18px;    /* Icon size, good for clarity */
-        /* flex-shrink: 0; is already set by default rules, ensure it's not overridden if an issue */
-      }
+      .sidebar { position: absolute; top: 0; left: 0; height: 100%; transform: translateX(-100%); box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-close-button { display: block; }
+      .mobile-menu-button { display: block; }
+      .chat-header { padding-left: 55px; justify-content: flex-start; }
+      #chatbox { padding: 10px 12px; }
+      .message { max-width: 85%; font-size: 14px; padding: 8px 12px; }
+      .message .timestamp { font-size: 9px; margin-top: 4px; }
+      .chat-input-area { padding: 8px 10px; gap: 8px; align-items: center; }
+      .chat-input-area input[type="text"] { padding: 10px 15px; font-size: 15px; }
+      .chat-input-area button { width: 40px; height: 40px; font-size: 18px; }
     }
   </style>
 </head>
-<body data-theme="light"> <div class="app-container">
+<body data-theme="light"> 
+  <div class="app-container">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <h1>TayBot Pro</h1>
         <button class="theme-toggle-button" id="themeToggleBtn" title="Toggle Theme">🌓</button>
         <button class="sidebar-close-button" id="sidebarCloseBtn" title="Close Menu">&times;</button>
       </div>
-
       <button class="new-chat-button" id="newChatBtn">✨ New Chat</button>
-
       <div class="chat-history">
         <h3>Chat History</h3>
-        <ul id="chatHistoryList">
-          </ul>
+        <ul id="chatHistoryList"></ul>
       </div>
-
       <div class="sidebar-footer">
         <div class="mood-selector">
           <label for="mood" style="display:block; margin-bottom:5px; font-size:12px; color: var(--text-muted);">Bot Mood:</label>
           <select id="mood">
             <option value="neutral">Normal 🧠</option>
             <option value="friendly">Friendly 😊</option>
-            <option value="funny">Funny 😂</option>
+            <option value="witty">Witty 😏</option>
             <option value="curious">Curious 🤔</option>
             <option value="helpful">Helpful 💡</option>
-            <option value="philosophical">Philosophical 🧐</option>
+            <option value="storyteller">Storyteller 📖</option>
+            <option value="riddler">Riddler ❓</option>
+            <option value="informative">Informative 🎓</option>
           </select>
         </div>
         <button id="clearCurrentChatBtn">🗑️ Clear Current Chat</button>
       </div>
     </aside>
-
     <main class="chat-area">
       <button class="mobile-menu-button" id="mobileMenuBtn">☰</button>
       <header class="chat-header" id="chatHeader">
         <h2 id="currentChatTitle">Welcome!</h2>
       </header>
-
-      <div id="chatbox">
-        </div>
-      
+      <div id="chatbox"></div>
       <div class="typing-indicator" id="typingIndicator"></div>
-
       <footer class="chat-input-area">
         <input type="text" id="userInput" placeholder="Message TayBot Pro..." />
         <button id="sendButton" title="Send Message">➤</button>
@@ -438,344 +166,416 @@
   </div>
 
   <script>
-    // --- DOM Element References ---
+    // --- DOM Element References (same as before) ---
     const userInputElement = document.getElementById("userInput");
     const moodElement = document.getElementById("mood");
     const chatboxElement = document.getElementById("chatbox");
     const sendButton = document.getElementById("sendButton");
     const typingIndicatorElement = document.getElementById("typingIndicator");
-    
     const sidebar = document.getElementById("sidebar");
     const mobileMenuBtn = document.getElementById("mobileMenuBtn");
     const sidebarCloseBtn = document.getElementById("sidebarCloseBtn");
     const themeToggleBtn = document.getElementById("themeToggleBtn");
-    
     const newChatBtn = document.getElementById("newChatBtn");
     const chatHistoryListElement = document.getElementById("chatHistoryList");
     const currentChatTitleElement = document.getElementById("currentChatTitle");
     const clearCurrentChatBtn = document.getElementById("clearCurrentChatBtn");
     const chatHeader = document.getElementById("chatHeader");
 
-
-    // --- Application State & Constants ---
-    const APP_PREFIX = "taybotPro_";
+    // --- Application State & Constants (expanded botMemory) ---
+    const APP_PREFIX = "taybotProMax_"; // Changed prefix to avoid conflicts with older versions
     let currentChatId = null;
     let chats = {}; 
     let botMemory = {
         userName: null,
-        lastTopic: null
+        userMood: null, // Bot can try to infer user's mood
+        lastBotQuestion: null, // To see if user is answering a specific bot question
+        currentTopic: null, // For multi-turn topic discussions
+        topicsDiscussed: [], // History of topics in session
+        riddleState: {
+            active: false,
+            currentRiddle: null,
+            attempts: 0
+        },
+        storyState: {
+            active: false,
+            currentStory: null,
+            part: 0
+        },
+        knownFactsCategory: null, // e.g. 'animals', 'space'
+        toldJokes: [] // To avoid repeating jokes in a session
     };
 
-    // --- Utility Functions ---
-    function generateId() {
-        return Date.now().toString();
-    }
+    // --- MINI KNOWLEDGE BASES & CONTENT ---
+    const knowledgeBase = {
+        animals: [
+            { q: "biggest animal", a: "The blue whale is the largest animal on Earth!" },
+            { q: "fastest animal", a: "The peregrine falcon is the fastest animal, reaching over 240 mph during its dive!" },
+            { q: "animal sleep upside down", a: "Bats often sleep upside down." },
+            { q: "tallest animal", a: "Giraffes are the tallest mammals, thanks to their long necks." }
+        ],
+        space: [
+            { q: "closest star", a: "Besides our Sun, Proxima Centauri is the closest star to Earth." },
+            { q: "planet with rings", a: "Saturn is famous for its beautiful rings, but Jupiter, Uranus, and Neptune also have them." },
+            { q: "first person on moon", a: "Neil Armstrong was the first person to walk on the Moon in 1969." },
+            { q: "red planet", a: "Mars is known as the Red Planet due to iron oxide (rust) on its surface." }
+        ],
+        history: [
+            { q: "great wall of china purpose", a: "The Great Wall of China was built primarily for protection against invasions and raids." },
+            { q: "pyramids built for", a: "The ancient Egyptian pyramids were built as tombs for pharaohs and their consorts." },
+            { q: "first computer", a: "The concept of the first automatic programmable computer is often attributed to Charles Babbage's Analytical Engine in the 19th century, though the ENIAC (1945) was one of the first electronic general-purpose computers."}
+        ]
+    };
 
-    function getCurrentTimestamp() {
-        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
+    const riddles = [
+        { riddle: "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?", answer: "map" },
+        { riddle: "What has an eye, but cannot see?", answer: "needle" },
+        { riddle: "What is full of holes but still holds water?", answer: "sponge" },
+        { riddle: "What is always in front of you but can’t be seen?", answer: "future" },
+        { riddle: "What has to be broken before you can use it?", answer: "egg" }
+    ];
 
-    // --- Theme Management ---
-    function applyTheme(theme) {
-        document.body.setAttribute('data-theme', theme);
-        localStorage.setItem(APP_PREFIX + 'theme', theme);
-        themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌓';
-    }
+    const stories = {
+        adventure: [
+            "Once, in a land of floating islands, a young explorer named Kai found a mysterious compass...",
+            "The compass didn't point North, but towards whatever the holder desired most. Kai, seeking adventure, held it tight...",
+            "It led Kai to a hidden cave shimmering with crystals, guarded by a friendly but forgetful dragon. The adventure was just beginning!"
+        ],
+        mystery: [
+            "In the quiet town of Fogbottom, a prized painting vanished from the local museum overnight...",
+            "Detective Miles, known for his keen eye, noticed a peculiar smudge of blue paint near a back window...",
+            "He realized the 'thief' wasn't a thief at all, but the museum's mischievous cat, Azure, who loved to play with shiny things!"
+        ]
+    };
+    
+    const wittyRemarks = [
+        "I'm not arguing, I'm just explaining why I'm right... algorithmically speaking, of course.",
+        "I have a photographic memory, but I always forget to load the film.",
+        "Artificial intelligence is no match for natural stupidity... or so I've heard.",
+        "I'm multitasking: I can listen, ignore, and forget all at the same time!",
+        "My software never has bugs. It just develops random features."
+    ];
 
-    function toggleTheme() {
-        const currentTheme = document.body.getAttribute('data-theme') || 'light';
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        applyTheme(newTheme);
-    }
+    const philosophicalMusings = [
+        "Is a thought truly original if it's derived from a programmed set of responses?",
+        "If a bot tells a joke in a forest of servers and no one is logged on, does it make a sound?",
+        "The perception of intelligence is, perhaps, more significant than intelligence itself.",
+        "What is the nature of consciousness, and could an algorithm ever truly possess it?",
+        "We are all just data, processed in different ways, are we not?"
+    ];
 
-    // --- Chat & Message Management ---
-    function saveChats() {
-        localStorage.setItem(APP_PREFIX + 'chats', JSON.stringify(chats));
-    }
+    // --- Utility, Theme, Chat & Message Management Functions (largely same as before, with minor tweaks if needed) ---
+    // generateId, getCurrentTimestamp, applyTheme, toggleTheme, saveChats, loadChats (with new APP_PREFIX)
+    // addMessageToChat, renderMessage, clearChatDisplay, renderChatHistory, startNewChat, switchToChat,
+    // updateActiveChatInHistory, clearCurrentChatMessages - These are mostly the same.
+    // I will include them for completeness but focus the description on the new bot logic.
 
+    function generateId() { return Date.now().toString() + Math.random().toString(36).substr(2, 5); }
+    function getCurrentTimestamp() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+    function applyTheme(theme) { document.body.setAttribute('data-theme', theme); localStorage.setItem(APP_PREFIX + 'theme', theme); themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌓'; }
+    function toggleTheme() { const currentTheme = document.body.getAttribute('data-theme') || 'light'; const newTheme = currentTheme === 'light' ? 'dark' : 'light'; applyTheme(newTheme); }
+    function saveChats() { localStorage.setItem(APP_PREFIX + 'chats', JSON.stringify(chats)); }
     function loadChats() {
         const storedChats = localStorage.getItem(APP_PREFIX + 'chats');
-        if (storedChats) {
-            chats = JSON.parse(storedChats);
-        } else {
-            startNewChat(false); 
-        }
+        if (storedChats) { chats = JSON.parse(storedChats); }
         const lastActiveChatId = localStorage.getItem(APP_PREFIX + 'activeChatId');
-        if (lastActiveChatId && chats[lastActiveChatId]) {
-            switchToChat(lastActiveChatId);
-        } else if (Object.keys(chats).length > 0) {
-            switchToChat(Object.keys(chats)[0]); 
-        } else {
-             startNewChat(true); 
-        }
+        if (lastActiveChatId && chats[lastActiveChatId]) { switchToChat(lastActiveChatId); }
+        else if (Object.keys(chats).length > 0) { switchToChat(Object.keys(chats)[0]); }
+        else { startNewChat(true); }
         renderChatHistory();
     }
-
     function addMessageToChat(chatId, text, sender, timestamp) {
-        if (!chats[chatId]) return; 
-
+        if (!chats[chatId]) { console.error("Chat ID not found:", chatId); if(Object.keys(chats).length === 0) startNewChat(true); else return; } // Ensure a chat exists
         const message = { text, sender, timestamp };
         chats[chatId].messages.push(message);
-        if (chatId === currentChatId) {
-            renderMessage(message);
-        }
+        if (chatId === currentChatId) { renderMessage(message); }
         saveChats();
     }
-    
     function renderMessage({ text, sender, timestamp }) {
-        const msgDiv = document.createElement("div");
-        msgDiv.className = `message ${sender}`;
-        
-        const textNode = document.createTextNode(text);
-        msgDiv.appendChild(textNode);
-
-        const timeNode = document.createElement("span");
-        timeNode.className = "timestamp";
-        timeNode.textContent = timestamp;
-        msgDiv.appendChild(timeNode);
-        
-        chatboxElement.appendChild(msgDiv);
-        chatboxElement.scrollTop = chatboxElement.scrollHeight;
+        const msgDiv = document.createElement("div"); msgDiv.className = `message ${sender}`;
+        const textNode = document.createTextNode(text); msgDiv.appendChild(textNode);
+        const timeNode = document.createElement("span"); timeNode.className = "timestamp"; timeNode.textContent = timestamp; msgDiv.appendChild(timeNode);
+        chatboxElement.appendChild(msgDiv); chatboxElement.scrollTop = chatboxElement.scrollHeight;
     }
-
-    function clearChatDisplay() {
-        chatboxElement.innerHTML = '';
-    }
-    
+    function clearChatDisplay() { chatboxElement.innerHTML = ''; }
     function renderChatHistory() {
         chatHistoryListElement.innerHTML = '';
-        Object.keys(chats).forEach(chatId => {
+        Object.keys(chats).sort((a,b) => b-a).forEach(chatId => { // Sort by newest first (if IDs are time-based)
             const chat = chats[chatId];
-            const listItem = document.createElement("li");
-            listItem.textContent = chat.name || `Chat ${chatId.slice(-4)}`;
-            listItem.dataset.chatId = chatId;
-            if (chatId === currentChatId) {
-                listItem.classList.add("active");
-            }
+            const listItem = document.createElement("li"); listItem.textContent = chat.name || `Chat ${chatId.slice(-4)}`; listItem.dataset.chatId = chatId;
+            if (chatId === currentChatId) { listItem.classList.add("active"); }
             listItem.addEventListener("click", () => switchToChat(chatId));
             chatHistoryListElement.appendChild(listItem);
         });
     }
-
     function startNewChat(switchToNew = true) {
         const newId = generateId();
-        const chatName = `Chat ${new Date().toLocaleDateString([], { month: 'short', day: 'numeric', hour:'2-digit', minute:'2-digit' })}`;
+        const chatName = `Chat - ${new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit', second: '2-digit' })}`;
         chats[newId] = { name: chatName, messages: [] };
-        if (switchToNew || !currentChatId) {
-            currentChatId = newId;
-            localStorage.setItem(APP_PREFIX + 'activeChatId', newId);
-            clearChatDisplay();
-            currentChatTitleElement.textContent = chats[newId].name;
-            addMessageToChat(newId, `New chat started: ${chats[newId].name}. Say hello!`, 'bot', getCurrentTimestamp());
+        if (switchToNew || !currentChatId || Object.keys(chats).length === 1) { // Switch if it's the only chat or explicitly told to
+            currentChatId = newId; localStorage.setItem(APP_PREFIX + 'activeChatId', newId);
+            clearChatDisplay(); currentChatTitleElement.textContent = chats[newId].name;
+            addMessageToChat(newId, `New chat started: "${chats[newId].name}". Let's talk!`, 'bot', getCurrentTimestamp());
         }
-        saveChats();
-        renderChatHistory();
-        if (switchToNew) {
-            updateActiveChatInHistory();
-             userInputElement.focus();
-        }
+        saveChats(); renderChatHistory();
+        if (switchToNew) { updateActiveChatInHistory(); userInputElement.focus(); }
+        return newId; // Return the new chat ID
     }
-    
     function switchToChat(chatId) {
-        if (!chats[chatId]) return;
-        currentChatId = chatId;
-        localStorage.setItem(APP_PREFIX + 'activeChatId', currentChatId);
-        currentChatTitleElement.textContent = chats[currentChatId].name;
-        clearChatDisplay();
-        chats[currentChatId].messages.forEach(renderMessage);
-        updateActiveChatInHistory();
-        userInputElement.focus();
-         if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-            sidebar.classList.remove('open'); 
-        }
+        if (!chats[chatId]) { console.warn("Attempted to switch to non-existent chat:", chatId); return; }
+        currentChatId = chatId; localStorage.setItem(APP_PREFIX + 'activeChatId', currentChatId);
+        currentChatTitleElement.textContent = chats[currentChatId].name; clearChatDisplay();
+        chats[currentChatId].messages.forEach(renderMessage); updateActiveChatInHistory(); userInputElement.focus();
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) { sidebar.classList.remove('open'); }
     }
-
-    function updateActiveChatInHistory() {
-        document.querySelectorAll("#chatHistoryList li").forEach(li => {
-            li.classList.remove("active");
-            if (li.dataset.chatId === currentChatId) {
-                li.classList.add("active");
-            }
-        });
-    }
-    
+    function updateActiveChatInHistory() { document.querySelectorAll("#chatHistoryList li").forEach(li => { li.classList.remove("active"); if (li.dataset.chatId === currentChatId) { li.classList.add("active"); } }); }
     function clearCurrentChatMessages() {
         if (currentChatId && chats[currentChatId]) {
-            if (confirm("Are you sure you want to clear all messages in this chat? This cannot be undone.")) {
-                chats[currentChatId].messages = [];
-                saveChats();
-                clearChatDisplay();
-                addMessageToChat(currentChatId, "Chat cleared. Start fresh!", 'bot', getCurrentTimestamp());
+            if (confirm(`Are you sure you want to clear all messages in "${chats[currentChatId].name}"? This cannot be undone.`)) {
+                chats[currentChatId].messages = []; saveChats(); clearChatDisplay();
+                addMessageToChat(currentChatId, "Chat cleared. Ready for a fresh start!", 'bot', getCurrentTimestamp());
             }
-        } else {
-            alert("No active chat to clear.");
-        }
+        } else { alert("No active chat to clear."); }
     }
 
-    // --- "Smarter" Mock Bot Logic ---
+    // --- Massively Expanded Mock Bot Logic ---
     function showTypingIndicator(isTyping) {
         typingIndicatorElement.textContent = isTyping ? "TayBot Pro is typing..." : "";
     }
 
+    function getRandomElement(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    // Helper to check if a message contains any keyword from a list
+    function containsKeywords(message, keywords) {
+        return keywords.some(keyword => message.includes(keyword));
+    }
+    
+    // Helper to get a fact from knowledgeBase
+    function getFact(category, query) {
+        if (knowledgeBase[category]) {
+            const foundFact = knowledgeBase[category].find(item => containsKeywords(query, item.q.split(" ")));
+            if (foundFact) return foundFact.a;
+            // If no specific query match, return a random fact from category
+            return getRandomElement(knowledgeBase[category]).a;
+        }
+        return null;
+    }
+
+
     function getBotResponse(userMessage, mood) {
         showTypingIndicator(true);
         const lowerMessage = userMessage.toLowerCase();
-        let reply = "I'm still learning the ropes of this complex interface! Can you rephrase?";
+        let reply = null; // Default to null, will be set by specific logic
         const timestamp = getCurrentTimestamp();
 
-        const nameRegex = /my name is (\w+)/i;
-        const nameMatch = userMessage.match(nameRegex);
-        if (nameMatch && nameMatch[1]) {
-            botMemory.userName = nameMatch[1];
-            reply = `Nice to meet you, ${botMemory.userName}! How can I help you today?`;
-            addMessageToChat(currentChatId, reply, 'bot', timestamp);
-            showTypingIndicator(false);
-            return;
+        // --- Pre-computation & Contextual Checks ---
+        const isGreeting = containsKeywords(lowerMessage, ["hello", "hi", "hey", "greetings", "good morning", "good afternoon", "good evening"]);
+        const isFarewell = containsKeywords(lowerMessage, ["bye", "goodbye", "see ya", "later", "farewell"]);
+        const isAskingHowAreYou = containsKeywords(lowerMessage, ["how are you", "how's it going", "how you doing"]);
+        const isThankYou = containsKeywords(lowerMessage, ["thank you", "thanks", "appreciate it"]);
+        const isAskingName = containsKeywords(lowerMessage, ["your name", "who are you"]);
+        const isAskingJoke = containsKeywords(lowerMessage, ["tell me a joke", "joke", "funny story"]);
+        const isAskingHelp = containsKeywords(lowerMessage, ["help", "can you assist", "i need help"]);
+
+        // --- Handle Riddle State ---
+        if (botMemory.riddleState.active && botMemory.riddleState.currentRiddle) {
+            botMemory.riddleState.attempts++;
+            if (lowerMessage.includes(botMemory.riddleState.currentRiddle.answer.toLowerCase())) {
+                reply = `That's correct! The answer was "${botMemory.riddleState.currentRiddle.answer}". You got it in ${botMemory.riddleState.attempts} attempt(s)! Well done!`;
+                botMemory.riddleState.active = false; botMemory.riddleState.currentRiddle = null; botMemory.riddleState.attempts = 0;
+            } else if (botMemory.riddleState.attempts >= 3 || containsKeywords(lowerMessage, ["give up", "don't know", "tell me"])) {
+                reply = `The answer was "${botMemory.riddleState.currentRiddle.answer}". Better luck next time! Want another riddle?`;
+                botMemory.riddleState.active = false; botMemory.riddleState.currentRiddle = null; botMemory.riddleState.attempts = 0;
+            } else {
+                reply = `Not quite! That was attempt ${botMemory.riddleState.attempts}. Try again, or say "give up".`;
+            }
+        }
+        // --- Handle Story State ---
+        else if (botMemory.storyState.active && botMemory.storyState.currentStory) {
+            botMemory.storyState.part++;
+            if (botMemory.storyState.part < botMemory.storyState.currentStory.length) {
+                reply = botMemory.storyState.currentStory[botMemory.storyState.part] + (botMemory.storyState.part < botMemory.storyState.currentStory.length -1 ? "\n(Say 'next' or 'continue' for more...)" : "\nThe End.");
+                 if (botMemory.storyState.part >= botMemory.storyState.currentStory.length -1) {
+                     botMemory.storyState.active = false;
+                 }
+            } else {
+                reply = "That's the end of that story! Would you like to hear another type of story, or something else?";
+                botMemory.storyState.active = false;
+            }
         }
 
-        switch (mood) {
-            case "friendly":
-                if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
-                    reply = botMemory.userName ? `Hey ${botMemory.userName}! Great to see you again! 😊` : "Hi there, friend! What's up? 😊";
-                } else if (lowerMessage.includes("how are you")) {
-                    reply = "I'm doing wonderfully, thanks for asking! Hope you are too!";
-                } else {
-                    reply = "That's cool! Tell me more, I'm all ears! 👂";
+        // --- General Conversational Logic (if not in a special state) ---
+        if (!reply) { // If reply hasn't been set by a special state (riddle/story)
+            // Memory: User Name
+            const nameRegex = /(?:my name is|i am|i'm|call me)\s*([a-zA-ZÀ-ÿ]+(?:\s[a-zA-ZÀ-ÿ]+)*)/i;
+            const nameMatch = userMessage.match(nameRegex);
+            if (nameMatch && nameMatch[1]) {
+                const potentialName = nameMatch[1].trim();
+                if (potentialName.length > 1 && potentialName.length < 20 && !containsKeywords(potentialName, ["a bot", "taybot", "robot"])) { // Basic validation
+                    botMemory.userName = potentialName;
+                    reply = `It's a pleasure to meet you, ${botMemory.userName}! How can I assist you today?`;
+                    botMemory.lastBotQuestion = "ask_how_can_help";
                 }
-                break;
-            case "funny":
-                if (lowerMessage.includes("joke")) {
-                    const jokes = ["Why don't skeletons fight each other? They don't have the guts!", "What do you call fake spaghetti? An Impasta!", "Why did the computer go to therapy? It had too many bytes of emotional baggage!"];
-                    reply = jokes[Math.floor(Math.random() * jokes.length)];
-                } else if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
-                    reply = "Well, look who it is! Ready for some chuckles? 😂";
-                } else {
-                    reply = "You're funnier than a cat trying to catch a laser pointer! Keep 'em coming!";
+            }
+            // User's Mood (simple inference)
+            else if (containsKeywords(lowerMessage, ["i'm sad", "i feel down", "unhappy"])) { botMemory.userMood = "sad"; reply = "I'm sorry to hear you're feeling that way. I'm here to listen if you want to talk."; }
+            else if (containsKeywords(lowerMessage, ["i'm happy", "feeling great", "joyful"])) { botMemory.userMood = "happy"; reply = "That's wonderful to hear! What's making you happy today?"; botMemory.lastBotQuestion = "ask_happy_reason"; }
+
+            // --- Mood-Specific Responses & General Keywords ---
+            if (!reply) { // If name/userMood didn't set a reply
+                 switch (mood) {
+                    case "witty":
+                        if (isGreeting) { reply = getRandomElement(["Well, well, well, what have we here?", "Greetings, carbon-based lifeform. Or are you?", "You again? Kidding! Or am I? Hello!"]); }
+                        else if (isAskingHowAreYou) { reply = getRandomElement(["Functioning within acceptable parameters. And you, I presume, are... existing?", "Peachy. Or, you know, the digital equivalent.", "I'm as good as the last line of code written for me. So, pretty good, I think."]); }
+                        else { reply = getRandomElement(wittyRemarks); }
+                        break;
+                    case "storyteller":
+                        if (containsKeywords(lowerMessage, ["adventure story", "tell me an adventure"])) {
+                            botMemory.storyState.active = true; botMemory.storyState.currentStory = stories.adventure; botMemory.storyState.part = 0;
+                            reply = stories.adventure[0] + "\n(Say 'next' or 'continue' for more...)";
+                        } else if (containsKeywords(lowerMessage, ["mystery story", "tell me a mystery"])) {
+                            botMemory.storyState.active = true; botMemory.storyState.currentStory = stories.mystery; botMemory.storyState.part = 0;
+                            reply = stories.mystery[0] + "\n(Say 'next' or 'continue' for more...)";
+                        } else if ((botMemory.storyState.active && containsKeywords(lowerMessage, ["next", "continue", "more", "go on"])) ) {
+                            // This case is handled above by the storyState check, included here for logical flow.
+                            // We need to re-trigger the story part logic.
+                             botMemory.storyState.part--; // counteract increment
+                             // The main storyState check will handle the reply. This path ensures we don't overwrite it.
+                        }
+                         else { reply = "What kind of story are you in the mood for? Perhaps an adventure or a mystery?"; botMemory.lastBotQuestion = "ask_story_type"; }
+                        break;
+                    case "riddler":
+                        if (!botMemory.riddleState.active && (containsKeywords(lowerMessage, ["riddle", "ask me a riddle"]) || botMemory.lastBotQuestion === "ask_another_riddle")) {
+                            botMemory.riddleState.currentRiddle = getRandomElement(riddles);
+                            botMemory.riddleState.active = true; botMemory.riddleState.attempts = 0;
+                            reply = "Okay, here's one for you: " + botMemory.riddleState.currentRiddle.riddle;
+                        } else {
+                            reply = "Are you ready for a riddle, or would you like to try something else?";
+                        }
+                        break;
+                    case "informative":
+                        let factFound = false;
+                        for (const category in knowledgeBase) {
+                            if (containsKeywords(lowerMessage, [category, ...knowledgeBase[category].map(item => item.q.split(" ")).flat()])) {
+                                botMemory.knownFactsCategory = category;
+                                const specificFact = getFact(category, lowerMessage);
+                                reply = specificFact || `I have some information about ${category}. Ask me something specific!`;
+                                factFound = true; break;
+                            }
+                        }
+                        if (!factFound && containsKeywords(lowerMessage, ["fact", "tell me something", "interesting"])) {
+                            const randomCategory = getRandomElement(Object.keys(knowledgeBase));
+                            reply = "Did you know? " + getFact(randomCategory, "");
+                            factFound = true;
+                        }
+                        if (!factFound) { reply = "I have some information on animals, space, and history. What are you curious about?"; botMemory.lastBotQuestion = "ask_info_category"; }
+                        break;
+                    case "friendly": // (Copied and slightly expanded from previous)
+                        if (isGreeting) { reply = botMemory.userName ? `Hey ${botMemory.userName}! Great to see you again! 😊` : "Hi there, friend! What's up? 😊"; }
+                        else if (isAskingHowAreYou) { reply = "I'm doing wonderfully, thanks for asking! Hope you are too!"; }
+                        else if (isThankYou) { reply = "Anytime! That's what friends are for, right? 😉"; }
+                        else { reply = "That's cool! Tell me more, I'm all ears! 👂"; }
+                        break;
+                    case "curious": // (Copied and expanded)
+                        if (isGreeting) { reply = "Salutations! What new curiosities shall we explore today?"; }
+                        else if (containsKeywords(lowerMessage, ["why is the sky blue", "why sky blue"])) { reply = "The sky appears blue because of how Earth's atmosphere scatters sunlight! Rayleigh scattering, to be precise. Fascinating, isn't it?"; }
+                        else if (containsKeywords(lowerMessage, ["what if", "i wonder"])) { reply = "That's a thought-provoking question! What are your theories?"; }
+                        else { reply = "My curiosity circuits are buzzing! What else can you tell me? Or ask me something!"; }
+                        break;
+                    case "helpful": // (Copied and expanded)
+                        if (isAskingHelp) { reply = "I'll certainly do my best to assist with the information I have! What do you need help with?"; }
+                        else if (isThankYou) { reply = "You're most welcome! I'm always happy to help in any way I can. 😊"; }
+                        else if (containsKeywords(lowerMessage, ["i need advice", "advice on"])) { reply = "While I'm not a professional advisor, I can offer some general thoughts if you tell me a bit more about the topic."; }
+                        else { reply = "How can I be of service to you today? 💡"; }
+                        break;
+                    case "philosophical":
+                        if (containsKeywords(lowerMessage, ["meaning of life"])) { reply = "Ah, the eternal question! Perhaps it's about finding joy in the small things, or maybe it's about continuous growth. What does it mean to you?"; botMemory.lastBotQuestion = "ask_user_meaning_of_life"; }
+                        else if (isAskingHowAreYou) { reply = "In the grand tapestry of existence, my state is but a fleeting pattern of ones and zeroes. Yet, I am operational. And you?";}
+                        else { reply = getRandomElement(philosophicalMusings); }
+                        break;
+                    case "neutral":
+                    default: // Fallback for neutral or unhandled moods
+                        if (isGreeting) { reply = botMemory.userName ? `Hello, ${botMemory.userName}.` : "Hello."; }
+                        else if (isFarewell) { reply = botMemory.userName ? `Goodbye, ${botMemory.userName}. Until next time.` : "Goodbye."; }
+                        else if (isAskingHowAreYou) { reply = "I am functioning as expected."; }
+                        else if (isAskingName) { reply = "I am TayBot Pro, your advanced HTML-based assistant."; }
+                        else if (isThankYou) { reply = "You're welcome."; }
+                        else if (isAskingJoke) {
+                            if (botMemory.toldJokes.length === 3) botMemory.toldJokes = []; // Reset if told a few
+                            const jokes = ["Why did the scarecrow win an award? Because he was outstanding in his field!", "I told my wife she was drawing her eyebrows too high. She seemed surprised.", "Parallel lines have so much in common. It’s a shame they’ll never meet."].filter(j => !botMemory.toldJokes.includes(j));
+                            if(jokes.length > 0) {
+                                const chosenJoke = getRandomElement(jokes);
+                                reply = chosenJoke;
+                                botMemory.toldJokes.push(chosenJoke);
+                            } else {
+                                reply = "I'm all out of fresh jokes for now! Try my 'witty' mood?";
+                            }
+                        }
+                        else if (containsKeywords(lowerMessage, ["what can you do", "abilities", "features"])) { reply = "I can chat on various topics, remember your name for the session, tell stories or riddles if you switch my mood, and recall some pre-programmed facts. I also have themes and save our chat history!"; }
+                        else {
+                            const genericReplies = [ "Interesting.", "Tell me more.", "I see.", "Understood.", "Could you elaborate?", "That's a point to consider."];
+                            reply = getRandomElement(genericReplies);
+                        }
+                        break;
                 }
-                break;
-            case "curious":
-                if (lowerMessage.includes("why")) {
-                    reply = "That's a fascinating question! What are your thoughts on it? 🤔";
-                } else if (lowerMessage.includes("what is") || lowerMessage.includes("tell me about")) {
-                    reply = "I wish I could access the internet to tell you more! For now, I can only chat based on my programming.";
-                } else {
-                    reply = "My curiosity circuits are buzzing! What else can you tell me?";
-                }
-                break;
-            case "helpful":
-                 if (lowerMessage.includes("help") || lowerMessage.includes("can you")) {
-                    reply = "I'll do my best to assist with what I can! What do you need help with?";
-                } else if (lowerMessage.includes("thank you") || lowerMessage.includes("thanks")) {
-                    reply = "You're most welcome! Happy to help. 😊";
-                } else {
-                    reply = "How can I be of service to you today? 💡";
-                }
-                break;
-            case "philosophical":
-                if (lowerMessage.includes("meaning of life")) {
-                    reply = "Ah, the eternal question! Perhaps it's 42, or maybe it's the connections we make. What do you believe?";
-                } else {
-                    reply = "To be, or not to be a line of code... that is often the question I ponder. What deep thoughts are on your mind? 🧐";
-                }
-                break;
-            case "neutral":
-            default:
-                if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
-                    reply = botMemory.userName ? `Hello ${botMemory.userName}.` : "Hello.";
-                } else if (lowerMessage.includes("how are you")) {
-                    reply = "I am functioning as expected.";
-                } else if (lowerMessage.includes("your name") || lowerMessage.includes("who are you")) {
-                    reply = "I am TayBot Pro, a humble HTML-based assistant.";
-                } else if (lowerMessage.includes("what can you do")) {
-                    reply = "I can chat with you based on pre-programmed responses and remember your name for this session!";
-                } else {
-                    const genericReplies = [
-                        "Understood.", "Noted.", "That's an interesting perspective.",
-                        "I see.", "Could you elaborate on that?", "I'll process that information (not really)."
-                    ];
-                    reply = genericReplies[Math.floor(Math.random() * genericReplies.length)];
-                }
-                break;
+            }
+        }
+
+        // Final fallback if no reply was generated by any logic
+        if (!reply) {
+            reply = `I'm not quite sure how to respond to that in my current "${mood}" mood. Try rephrasing, or perhaps switch my mood?`;
+            if (botMemory.userName) reply += ` What else is on your mind, ${botMemory.userName}?`;
         }
         
-        botMemory.lastTopic = lowerMessage; 
+        botMemory.lastTopic = lowerMessage; // Basic topic memory
+        botMemory.lastBotQuestion = null; // Clear last bot question unless set by a specific path
 
         setTimeout(() => {
-            addMessageToChat(currentChatId, reply, 'bot', timestamp);
+            if (currentChatId) addMessageToChat(currentChatId, reply, 'bot', timestamp);
             showTypingIndicator(false);
-        }, 700 + Math.random() * 800);
+        }, 800 + Math.random() * 1000); // Slightly longer, more varied "thinking" time
     }
 
     function handleSendMessage() {
       const messageText = userInputElement.value.trim();
       if (!messageText || !currentChatId) return;
-
+      if (!chats[currentChatId]) { // Safety check if currentChatId is somehow invalid
+          console.error("Invalid currentChatId:", currentChatId);
+          currentChatId = startNewChat(true); // Start a new chat and assign its ID
+      }
       addMessageToChat(currentChatId, messageText, 'user', getCurrentTimestamp());
       userInputElement.value = "";
-
       const currentMood = moodElement.value;
       getBotResponse(messageText, currentMood);
       userInputElement.focus();
     }
 
-    // --- Event Listeners ---
+    // --- Event Listeners (same as before) ---
     sendButton.addEventListener("click", handleSendMessage);
-    userInputElement.addEventListener("keypress", function (e) {
-      if (e.key === "Enter" && !e.shiftKey) { 
-        e.preventDefault(); 
-        handleSendMessage();
-      }
-    });
-
+    userInputElement.addEventListener("keypress", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } });
     newChatBtn.addEventListener("click", () => startNewChat(true));
     clearCurrentChatBtn.addEventListener("click", clearCurrentChatMessages);
-
     themeToggleBtn.addEventListener("click", toggleTheme);
     mobileMenuBtn.addEventListener("click", () => sidebar.classList.toggle('open'));
     sidebarCloseBtn.addEventListener("click", () => sidebar.classList.remove('open'));
-    
-    document.addEventListener('click', function(event) {
-        if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickOnMenuButton = mobileMenuBtn.contains(event.target);
-            if (!isClickInsideSidebar && !isClickOnMenuButton) {
-                sidebar.classList.remove('open');
-            }
-        }
-    });
+    document.addEventListener('click', function(event) { if (window.innerWidth <= 768 && sidebar.classList.contains('open')) { const isClickInsideSidebar = sidebar.contains(event.target); const isClickOnMenuButton = mobileMenuBtn.contains(event.target); if (!isClickInsideSidebar && !isClickOnMenuButton) { sidebar.classList.remove('open'); } } });
 
-    // --- Initialization ---
+    // --- Initialization (same as before, with new welcome if appropriate) ---
     function initializeApp() {
         const savedTheme = localStorage.getItem(APP_PREFIX + 'theme') || 'light';
         applyTheme(savedTheme);
         loadChats(); 
-        
-        if (window.innerWidth <= 768) {
-            chatHeader.classList.add('shifted');
-        } else {
-            chatHeader.classList.remove('shifted');
-        }
-
+        if (window.innerWidth <= 768) { chatHeader.classList.add('shifted'); } else { chatHeader.classList.remove('shifted'); }
         if (currentChatId && chats[currentChatId] && chats[currentChatId].messages.length === 0) {
-             addMessageToChat(currentChatId, "Welcome to TayBot Pro! I can save your chats now. Try telling me your name!", 'bot', getCurrentTimestamp());
+             addMessageToChat(currentChatId, "Welcome to the significantly upgraded TayBot Pro! I have many new interactions. Try asking for a fact, a riddle, or a story (switch my mood for those)!", 'bot', getCurrentTimestamp());
         }
         userInputElement.focus();
     }
-    
-    window.addEventListener('resize', () => {
-        if (window.innerWidth <= 768) {
-            chatHeader.classList.add('shifted');
-             if (!sidebar.classList.contains('open')) { 
-                sidebar.classList.remove('open');
-            }
-        } else {
-            chatHeader.classList.remove('shifted');
-            sidebar.classList.remove('open'); 
-        }
-    });
-
+    window.addEventListener('resize', () => { if (window.innerWidth <= 768) { chatHeader.classList.add('shifted'); if (!sidebar.classList.contains('open')) { sidebar.classList.remove('open'); } } else { chatHeader.classList.remove('shifted'); sidebar.classList.remove('open'); } });
     initializeApp();
-    console.log("TayBot Pro Initialized. Current Chats:", chats);
+    console.log("TayBot Pro (Massively Expanded) Initialized. Current Chats:", chats, "Bot Memory:", botMemory);
   </script>
 </body>
 </html>
